@@ -6,6 +6,9 @@ const (
 
 	// MessageQueuePublisherType defines a webserver api type using a message queueing service
 	MessageQueuePublisherType string = "rabbitmq"
+
+	// MessageQueuePublisherType defines a webserver api type using a message queueing service
+	ServiceBusQueuePublisherType string = "servicebus"
 )
 
 const (

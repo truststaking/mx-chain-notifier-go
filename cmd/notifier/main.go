@@ -75,12 +75,12 @@ VERSION:
 	apiType = cli.StringFlag{
 		Name:  "api-type",
 		Usage: "Deprecated: This flag specifies the api type, it defines the way in which it will expose the events. Options: rabbit-api | notifier",
-		Value: "notifier",
+		Value: "rabbit-api",
 	}
 
 	publisherType = cli.StringFlag{
 		Name:  "publisher-type",
-		Usage: "This flag specifies the publisher type, it defines the way in which it will expose the events. Options: " + common.MessageQueuePublisherType + " | " + common.WSPublisherType,
+		Usage: "This flag specifies the publisher type, it defines the way in which it will expose the events. Options: " + common.MessageQueuePublisherType + " | " + common.WSPublisherType + " | " + common.ServiceBusQueuePublisherType,
 		Value: common.MessageQueuePublisherType,
 	}
 )

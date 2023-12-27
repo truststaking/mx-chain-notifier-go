@@ -65,7 +65,7 @@ func (nr *notifierRunner) Start() error {
 	argsEventsHandler := factory.ArgsEventsHandlerFactory{
 		CheckDuplicates:      nr.configs.MainConfig.General.CheckDuplicates,
 		Locker:               lockService,
-		MqPublisher:          publisher,
+		Publisher:            publisher,
 		HubPublisher:         hub,
 		APIType:              nr.configs.Flags.PublisherType,
 		StatusMetricsHandler: statusMetricsHandler,

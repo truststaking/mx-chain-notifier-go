@@ -20,7 +20,7 @@ const bech32PubkeyConverterType = "bech32"
 type ArgsEventsHandlerFactory struct {
 	CheckDuplicates      bool
 	Locker               process.LockService
-	MqPublisher          process.Publisher
+	Publisher          	 process.Publisher
 	HubPublisher         process.Publisher
 	APIType              string
 	StatusMetricsHandler common.StatusMetricsHandler
@@ -28,7 +28,7 @@ type ArgsEventsHandlerFactory struct {
 
 // CreateEventsHandler will create an events handler processor
 func CreateEventsHandler(args ArgsEventsHandlerFactory) (process.EventsHandler, error) {
-	publisher, err := getPublisher(args.APIType, args.MqPublisher, args.HubPublisher)
+	publisher, err := getPublisher(args.APIType, args.Publisher, args.HubPublisher)
 	if err != nil {
 		return nil, err
 	}

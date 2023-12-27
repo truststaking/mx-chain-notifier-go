@@ -6,6 +6,7 @@ import (
 	"github.com/multiversx/mx-chain-notifier-go/config"
 	"github.com/multiversx/mx-chain-notifier-go/disabled"
 	"github.com/multiversx/mx-chain-notifier-go/rabbitmq"
+	"github.com/multiversx/mx-chain-notifier-go/servicebus"
 )
 
 // CreatePublisher creates publisher component
@@ -13,6 +14,8 @@ func CreatePublisher(apiType string, config config.MainConfig, marshaller marsha
 	switch apiType {
 	case common.MessageQueuePublisherType:
 		return createRabbitMqPublisher(config.RabbitMQ, marshaller)
+	case common.ServiceBusQueuePublisherType:
+		return createServiceBusPublisher(config.AzureServiceBus, marshaller)
 	case common.WSPublisherType:
 		return &disabled.Publisher{}, nil
 	default:
@@ -37,4 +40,23 @@ func createRabbitMqPublisher(config config.RabbitMQConfig, marshaller marshal.Ma
 	}
 
 	return rabbitPublisher, nil
+}
+
+func createServiceBusPublisher(config config.AzureServiceBusConfig, marshaller marshal.Marshalizer) (servicebus.PublisherService, error) {
+	serviceSubClient, err := servicebus.NewServiceBusClient(config.ServiceBusConnectionString)
+	if err != nil {
+		return nil, err
+	}
+
+	serviceSubPublisherArgs := servicebus.ArgsServiceBusPublisher{
+		Client:     serviceSubClient,
+		Config:     config,
+		Marshaller: marshaller,
+	}
+	serviceSubPublisher, err := servicebus.NewServiceBusPublisher(serviceSubPublisherArgs)
+	if err != nil {
+		return nil, err
+	}
+
+	return serviceSubPublisher, nil
 }

@@ -109,3 +109,55 @@
     [RabbitMQ.BlockEventsExchange]
         Name = "block_events"
         Type = "fanout"
+
+[AzureServiceBus]
+    # ServiceBusConnectionString is the connection string for the ServiceBus instance
+    ServiceBusConnectionString = ''
+
+        # The exchange which holds all logs and events
+    [AzureServiceBus.EventsExchange]
+        Topic = "all_events"
+        Enabled = true
+
+    # The exchange which holds revert events
+    [AzureServiceBus.RevertEventsExchange]
+        Topic = "revert_events"
+        Enabled = true
+
+    # The exchange which holds finalized block events
+    [AzureServiceBus.FinalizedEventsExchange]
+        Topic = "finalized_events"
+        Enabled = true
+
+    # The exchange which holds block txs events
+    [AzureServiceBus.BlockTxsExchange]
+        Topic = "block_txs"
+        Enabled = true
+
+    # The exchange which holds block scrs events
+    [AzureServiceBus.BlockScrsExchange]
+        Topic = "block_scrs"
+        Enabled = true
+
+    # The exchange which holds block events with additional info
+    [AzureServiceBus.BlockEventsExchange]
+        Topic = "block_events"
+        Enabled = true
+
+[AzureKeyVault]
+    # If enabled, the notifier will use Azure KeyVault to retrieve secrets for all non empty values in the config
+    Enabled = true
+
+    # KeyVault is the name of the Azure KeyVault that holds the secrets
+    KeyVaultUrl = "https://{replace_this}.vault.azure.net/"
+
+    # KeyVaultApiUsername is the name of the secret in the KeyVault that holds the username for the ConnectorApi
+    KeyVaultApiUsername = 'SquadNotifierUsername'
+    # KeyVaultApiPassword is the name of the secret in the KeyVault that holds the password for the ConnectorApiUsername
+    KeyVaultApiPassword = 'SquadNotifierPassword'    
+    # KeyVaultRabbitMQUrl is the name of the secret in the KeyVault that holds the connection string (URL) for the RabbitMQ instance
+    KeyVaultRabbitMQ = 'RabbitMqConnectionString'
+    # KeyVaultServiceBusUrl is the name of the secret in the KeyVault that holds the connection string for the ServiceBus instance
+    KeyVaultServiceBus = 'ServiceBusConnectionString'
+    # KeyVaultRedisUrl is the name of the secret in the KeyVault that holds the url for the Redis instance
+    KeyVaultRedisUrl = 'NotifierRedisURL'

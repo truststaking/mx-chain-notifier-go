@@ -1,6 +1,12 @@
 package config
 
-import "github.com/multiversx/mx-chain-core-go/core"
+import (
+	"context"
+
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/azure-sdk-for-go/sdk/keyvault/azsecrets"
+	"github.com/multiversx/mx-chain-core-go/core"
+)
 
 // Configs holds all configs
 type Configs struct {
@@ -16,6 +22,8 @@ type MainConfig struct {
 	ConnectorApi       ConnectorApiConfig
 	Redis              RedisConfig
 	RabbitMQ           RabbitMQConfig
+	AzureServiceBus    AzureServiceBusConfig
+	AzureKeyVault      AzureKeyVaultConfig
 }
 
 // GeneralConfig maps the general config section
@@ -113,12 +121,91 @@ type FlagsConfig struct {
 	RestApiInterface  string
 }
 
+type AzureKeyVaultConfig struct {
+	KeyVaultServiceBus  string
+	KeyVaultApiUsername string
+	KeyVaultApiPassword string
+	KeyVaultRabbitMQ    string
+	KeyVaultRedis       string
+	KeyVaultUrl         string
+	Enabled             bool
+}
+
+// ServiceBusExchangeConfig holds the configuration for a servicebus exchange
+type ServiceBusExchangeConfig struct {
+	Name    string
+	Enabled bool
+}
+
+type AzureServiceBusConfig struct {
+	ServiceBusConnectionString string
+	ServiceBusTopic            string
+	EventsExchange             ServiceBusExchangeConfig
+	RevertEventsExchange       ServiceBusExchangeConfig
+	FinalizedEventsExchange    ServiceBusExchangeConfig
+	BlockTxsExchange           ServiceBusExchangeConfig
+	BlockScrsExchange          ServiceBusExchangeConfig
+	BlockEventsExchange        ServiceBusExchangeConfig
+}
+
 // LoadMainConfig returns a MainConfig instance by reading the provided toml file
 func LoadMainConfig(filePath string) (*MainConfig, error) {
 	cfg := &MainConfig{}
 	err := core.LoadTomlFile(cfg, filePath)
 	if err != nil {
 		return nil, err
+	}
+
+	if cfg.AzureKeyVault.Enabled {
+		credentials, err := azidentity.NewDefaultAzureCredential(nil)
+		if err != nil {
+			return nil, err
+		}
+
+		client, err := azsecrets.NewClient(cfg.AzureKeyVault.KeyVaultUrl, credentials, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		if cfg.AzureKeyVault.KeyVaultRabbitMQ != "" {
+			rabbitURL, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultRabbitMQ, "", nil)
+			if err != nil {
+				return nil, err
+			}
+			cfg.RabbitMQ.Url = *rabbitURL.Value
+		}
+
+		if cfg.AzureKeyVault.KeyVaultRedis != "" {
+			redisURL, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultRedis, "", nil)
+			if err != nil {
+				return nil, err
+			}
+			cfg.Redis.Url = *redisURL.Value
+		}
+
+		if cfg.AzureKeyVault.KeyVaultApiUsername != "" {
+			apiUsername, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultApiUsername, "", nil)
+			if err != nil {
+				return nil, err
+			}
+			cfg.ConnectorApi.Username = *apiUsername.Value
+		}
+
+		if cfg.AzureKeyVault.KeyVaultApiPassword != "" {
+			apiPassword, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultApiPassword, "", nil)
+			if err != nil {
+				return nil, err
+			}
+			cfg.ConnectorApi.Password = *apiPassword.Value
+		}
+
+		if cfg.AzureKeyVault.KeyVaultServiceBus != "" {
+			serviceBusUrl, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultServiceBus, "", nil)
+			if err != nil {
+				return nil, err
+			}
+			cfg.AzureServiceBus.ServiceBusConnectionString = *serviceBusUrl.Value
+		}
 	}
 	return cfg, err
 }
