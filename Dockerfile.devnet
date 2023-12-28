@@ -3,7 +3,9 @@ FROM golang:alpine as builder
 WORKDIR /multiversx
 COPY . .
 
-RUN make build
+WORKDIR /multiversx/cmd/notifier
+
+RUN go build -o notifier
 
 # ===== SECOND STAGE ======
 FROM ubuntu:22.04
@@ -14,4 +16,4 @@ EXPOSE 8080
 
 WORKDIR /multiversx
 
-ENTRYPOINT ["./event-notifier", "--general-config", "config/config.devnet.toml", '--publisher-type', 'servicebus']
+ENTRYPOINT ["/notifier", "--general-config", "config/config.devnet.toml", '--publisher-type', 'servicebus']
