@@ -16,4 +16,4 @@ EXPOSE 8080
 
 WORKDIR /multiversx
 
-ENTRYPOINT ["./multiversx/notifier", "--general-config", "config/config.devnet.toml", "--publisher-type", "servicebus"]
+CMD ["notifier", "--general-config", "config/config.devnet.toml", "--publisher-type", "servicebus"]
