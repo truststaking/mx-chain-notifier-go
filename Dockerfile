@@ -15,5 +15,7 @@ COPY --from=builder /multiversx/cmd/notifier /multiversx
 EXPOSE 8080
 
 WORKDIR /multiversx
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
 
 ENTRYPOINT ["/notifier", '--publisher-type', 'servicebus']
