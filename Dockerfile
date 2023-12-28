@@ -16,4 +16,4 @@ EXPOSE 8080
 
 WORKDIR /multiversx
 
-CMD ["notifier", '--publisher-type', 'servicebus']
+CMD ["./notifier", '--publisher-type', 'servicebus']
