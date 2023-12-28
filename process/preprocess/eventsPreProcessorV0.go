@@ -8,8 +8,8 @@ import (
 	nodeData "github.com/multiversx/mx-chain-core-go/data"
 	"github.com/multiversx/mx-chain-core-go/data/block"
 	"github.com/multiversx/mx-chain-core-go/data/outport"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/process"
 )
 
 // TODO: dismiss this implementation after http integration is fully deprecated

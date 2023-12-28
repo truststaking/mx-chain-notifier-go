@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
-	"github.com/multiversx/mx-chain-notifier-go/redis"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
+	"github.com/truststaking/mx-chain-notifier-go/redis"
 )
 
 func createMockRedlockWrapperArgs() redis.ArgsRedlockWrapper {

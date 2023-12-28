@@ -2,7 +2,7 @@ package integrationTests
 
 import (
 	"github.com/multiversx/mx-chain-core-go/data/outport"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // PublisherHandler defines publisher behaviour

@@ -5,12 +5,12 @@ import (
 	factoryHost "github.com/multiversx/mx-chain-communication-go/websocket/factory"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	marshalFactory "github.com/multiversx/mx-chain-core-go/marshal/factory"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/disabled"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher/ws"
-	"github.com/multiversx/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/disabled"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher/ws"
+	"github.com/truststaking/mx-chain-notifier-go/process"
 )
 
 const (
@@ -22,6 +22,8 @@ const (
 func CreateWSHandler(apiType string, hub dispatcher.Hub, marshaller marshal.Marshalizer) (dispatcher.WSHandler, error) {
 	switch apiType {
 	case common.MessageQueuePublisherType:
+		return &disabled.WSHandler{}, nil
+	case common.ServiceBusQueuePublisherType:
 		return &disabled.WSHandler{}, nil
 	case common.WSPublisherType:
 		return createWSHandler(hub, marshaller)

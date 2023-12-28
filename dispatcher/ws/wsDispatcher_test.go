@@ -9,12 +9,12 @@ import (
 	"github.com/multiversx/mx-chain-core-go/core/mock"
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/data/transaction"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher/ws"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher/ws"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
 )
 
 // testWriter implements io.WriteCloser

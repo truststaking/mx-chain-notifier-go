@@ -1,8 +1,8 @@
 package rabbitmq
 
 import (
-	"github.com/multiversx/mx-chain-notifier-go/data"
 	"github.com/streadway/amqp"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // RabbitMqClient defines the behaviour of a rabbitMq client

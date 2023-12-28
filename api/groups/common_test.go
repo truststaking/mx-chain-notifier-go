@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 
 func startWebServer(group shared.GroupHandler, path string, apiConfig config.APIRoutesConfig) *gin.Engine {

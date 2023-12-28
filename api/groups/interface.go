@@ -5,7 +5,7 @@ import (
 
 	"github.com/multiversx/mx-chain-core-go/core"
 	"github.com/multiversx/mx-chain-core-go/data/block"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // EventsFacadeHandler defines the behavior of a facade handler needed for events group

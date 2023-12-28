@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-notifier-go/api/errors"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/api/errors"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
 )
 
 const (

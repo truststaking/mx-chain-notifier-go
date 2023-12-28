@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 
 var log = logger.GetOrCreate("api/groups")

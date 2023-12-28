@@ -5,8 +5,8 @@ import (
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	"github.com/multiversx/mx-chain-core-go/marshal"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
 
 // ArgsWebSocketProcessor defines the argument needed to create a websocketHandler

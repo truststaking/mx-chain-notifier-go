@@ -133,7 +133,7 @@ type AzureKeyVaultConfig struct {
 
 // ServiceBusExchangeConfig holds the configuration for a servicebus exchange
 type ServiceBusExchangeConfig struct {
-	Name    string
+	Topic    string
 	Enabled bool
 }
 

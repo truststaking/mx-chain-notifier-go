@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/data"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 func TestSubscriptionMap_Subscriptions(t *testing.T) {

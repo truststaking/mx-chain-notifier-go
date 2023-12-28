@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // HTTPServerCloser defines the basic actions of starting and closing that a web server should be able to do

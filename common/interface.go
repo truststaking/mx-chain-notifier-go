@@ -3,7 +3,7 @@ package common
 import (
 	"time"
 
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // StatusMetricsHandler defines the behavior of a component that handles status metrics

@@ -1,7 +1,7 @@
 package disabled
 
 import (
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // Publisher defines a disabled publisher component

@@ -2,11 +2,11 @@ package factory
 
 import (
 	"github.com/multiversx/mx-chain-core-go/marshal"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/disabled"
-	"github.com/multiversx/mx-chain-notifier-go/rabbitmq"
-	"github.com/multiversx/mx-chain-notifier-go/servicebus"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/disabled"
+	"github.com/truststaking/mx-chain-notifier-go/rabbitmq"
+	"github.com/truststaking/mx-chain-notifier-go/servicebus"
 )
 
 // CreatePublisher creates publisher component

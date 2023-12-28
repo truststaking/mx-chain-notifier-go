@@ -8,11 +8,11 @@ import (
 	"github.com/multiversx/mx-chain-core-go/core/mock"
 	"github.com/multiversx/mx-chain-core-go/data/block"
 	"github.com/multiversx/mx-chain-core-go/data/outport"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
-	"github.com/multiversx/mx-chain-notifier-go/process"
-	"github.com/multiversx/mx-chain-notifier-go/process/preprocess"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
+	"github.com/truststaking/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/process/preprocess"
 )
 
 func createDefaultDataProcessors() map[uint32]process.DataProcessor {

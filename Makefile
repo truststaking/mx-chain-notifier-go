@@ -33,7 +33,7 @@ build:
 	cd ${cmd_dir} && \
 		go build -v -ldflags="-X main.appVersion=$(git describe --tags --long --dirty)" -o ${binary}
 
-publisher_type="rabbitmq"
+publisher_type="servicebus"
 run: build
 	cd ${cmd_dir} && \
 		./${binary} --publisher-type=${publisher_type} --log-level="*:DEBUG"

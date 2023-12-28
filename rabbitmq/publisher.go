@@ -6,10 +6,10 @@ import (
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/data"
 	"github.com/streadway/amqp"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 const (

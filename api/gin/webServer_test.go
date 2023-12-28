@@ -5,12 +5,12 @@ import (
 
 	"github.com/multiversx/mx-chain-communication-go/testscommon"
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	apiErrors "github.com/multiversx/mx-chain-notifier-go/api/errors"
-	"github.com/multiversx/mx-chain-notifier-go/api/gin"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
 	"github.com/stretchr/testify/require"
+	apiErrors "github.com/truststaking/mx-chain-notifier-go/api/errors"
+	"github.com/truststaking/mx-chain-notifier-go/api/gin"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
 )
 
 func createMockArgsWebServerHandler() gin.ArgsWebServerHandler {

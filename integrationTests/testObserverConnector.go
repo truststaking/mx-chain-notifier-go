@@ -11,12 +11,12 @@ import (
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/factory"
-	"github.com/multiversx/mx-chain-notifier-go/process"
-	"github.com/multiversx/mx-chain-notifier-go/process/preprocess"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/factory"
+	"github.com/truststaking/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/process/preprocess"
 )
 
 // CreateObserverConnector will create observer connector component

@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/metrics"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/metrics"
 )
 
 func TestNewStatusMetrics(t *testing.T) {

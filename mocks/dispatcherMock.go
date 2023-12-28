@@ -2,8 +2,8 @@ package mocks
 
 import (
 	"github.com/google/uuid"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
 
 // DispatcherMock -

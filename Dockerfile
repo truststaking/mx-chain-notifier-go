@@ -5,7 +5,7 @@ COPY . .
 
 WORKDIR /multiversx/cmd/notifier
 
-RUN go build -o notifier
+RUN go build
 
 # ===== SECOND STAGE ======
 FROM ubuntu:22.04
@@ -16,4 +16,4 @@ EXPOSE 8080
 
 WORKDIR /multiversx
 
-ENTRYPOINT ["./notifier", '--publisher-type', 'servicebus']
+ENTRYPOINT ["./event-notifier", '--publisher-type', 'servicebus']

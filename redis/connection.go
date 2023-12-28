@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 
 var log = logger.GetOrCreate("redis")

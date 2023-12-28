@@ -3,9 +3,9 @@ package filters
 import (
 	"testing"
 
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
 
 var events = []data.Event{

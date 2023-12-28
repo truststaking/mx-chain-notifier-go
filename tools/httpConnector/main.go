@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/multiversx/mx-chain-notifier-go/testdata"
+	"github.com/truststaking/mx-chain-notifier-go/testdata"
 )
 
 func main() {

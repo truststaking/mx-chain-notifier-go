@@ -19,11 +19,11 @@
 
 [WebSocketConnector]
     # Enabled will determine if websocket connector will be enabled or not
-    Enabled = false
+    Enabled = true
 
     # URL for the WebSocket client/server connection
     # This value represents the IP address and port number that the WebSocket client or server will use to establish a connection.
-    URL = "localhost:22111"
+    URL = "https://notifier-devnet.livelysmoke-45e2a824.westeurope.azurecontainerapps.io:22111"
 
     # This flag describes the mode to start the WebSocket connector. Can be "client" or "server"
     Mode = "server"
@@ -45,7 +45,7 @@
 
 [ConnectorApi]
     # Enabled will determine if http connector will be enabled or not
-    Enabled = true
+    Enabled = false
 
     # The address on which the events notifier listens for subscriptions
     # It can be specified as "localhost:5000" or only as "5000"
@@ -150,7 +150,7 @@
     Enabled = true
 
     # KeyVault is the name of the Azure KeyVault that holds the secrets
-    KeyVaultUrl = "https://{replace_this}.vault.azure.net/"
+    KeyVaultUrl = "https://trustmarketdevnetvault.vault.azure.net/"
 
     # KeyVaultApiUsername is the name of the secret in the KeyVault that holds the username for the ConnectorApi
     KeyVaultApiUsername = 'SquadNotifierUsername'

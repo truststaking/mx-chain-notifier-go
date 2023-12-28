@@ -5,13 +5,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
-	"github.com/multiversx/mx-chain-notifier-go/filters"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/filters"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
 )
 
 func createMockCommonHubArgs() ArgsCommonHub {

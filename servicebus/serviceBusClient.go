@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 const (
@@ -48,7 +48,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	sb.pubMut.Lock()
 	defer sb.pubMut.Unlock()
 
-	sender, err := sb.client.NewSender(exchangeConfig.Name, nil)
+	sender, err := sb.client.NewSender(exchangeConfig.Topic, nil)
 
 	if err != nil {
 		log.Error("could not send the payload to azure service bus", "err", err.Error())

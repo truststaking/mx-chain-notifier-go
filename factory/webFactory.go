@@ -2,9 +2,9 @@ package factory
 
 import (
 	marshalFactory "github.com/multiversx/mx-chain-core-go/marshal/factory"
-	"github.com/multiversx/mx-chain-notifier-go/api/gin"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/api/gin"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 
 // CreateWebServerHandler will create a new web server handler component

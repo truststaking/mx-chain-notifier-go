@@ -6,14 +6,14 @@ import (
 
 	marshalFactory "github.com/multiversx/mx-chain-core-go/marshal/factory"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
-	"github.com/multiversx/mx-chain-notifier-go/facade"
-	"github.com/multiversx/mx-chain-notifier-go/factory"
-	"github.com/multiversx/mx-chain-notifier-go/metrics"
-	"github.com/multiversx/mx-chain-notifier-go/process"
-	"github.com/multiversx/mx-chain-notifier-go/rabbitmq"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/facade"
+	"github.com/truststaking/mx-chain-notifier-go/factory"
+	"github.com/truststaking/mx-chain-notifier-go/metrics"
+	"github.com/truststaking/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/rabbitmq"
 )
 
 var log = logger.GetOrCreate("notifierRunner")

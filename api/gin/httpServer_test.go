@@ -5,11 +5,11 @@ import (
 	"testing"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	apiErrors "github.com/multiversx/mx-chain-notifier-go/api/errors"
-	"github.com/multiversx/mx-chain-notifier-go/api/gin"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	apiErrors "github.com/truststaking/mx-chain-notifier-go/api/errors"
+	"github.com/truststaking/mx-chain-notifier-go/api/gin"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
 )
 
 func TestNewHTTPServer(t *testing.T) {

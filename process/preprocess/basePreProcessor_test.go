@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/multiversx/mx-chain-core-go/core/mock"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
-	"github.com/multiversx/mx-chain-notifier-go/process/preprocess"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
+	"github.com/truststaking/mx-chain-notifier-go/process/preprocess"
 )
 
 func createMockEventsDataPreProcessorArgs() preprocess.ArgsEventsPreProcessor {

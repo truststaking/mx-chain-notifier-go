@@ -15,13 +15,13 @@ import (
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/data/smartContractResult"
 	"github.com/multiversx/mx-chain-core-go/data/transaction"
-	apiErrors "github.com/multiversx/mx-chain-notifier-go/api/errors"
-	"github.com/multiversx/mx-chain-notifier-go/api/groups"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	apiErrors "github.com/truststaking/mx-chain-notifier-go/api/errors"
+	"github.com/truststaking/mx-chain-notifier-go/api/groups"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
 )
 
 const eventsPath = "/events"

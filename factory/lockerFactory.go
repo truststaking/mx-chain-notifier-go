@@ -1,10 +1,10 @@
 package factory
 
 import (
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/disabled"
-	"github.com/multiversx/mx-chain-notifier-go/redis"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/disabled"
+	"github.com/truststaking/mx-chain-notifier-go/redis"
 )
 
 // CreateLockService creates lock service component based on config

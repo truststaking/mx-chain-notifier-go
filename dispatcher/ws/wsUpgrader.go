@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
 	"github.com/gorilla/websocket"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
 
 type wsUpgraderWrapper struct {

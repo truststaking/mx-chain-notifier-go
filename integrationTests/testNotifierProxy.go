@@ -2,19 +2,19 @@ package integrationTests
 
 import (
 	"github.com/multiversx/mx-chain-core-go/marshal"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/disabled"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher/hub"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher/ws"
-	"github.com/multiversx/mx-chain-notifier-go/facade"
-	"github.com/multiversx/mx-chain-notifier-go/filters"
-	"github.com/multiversx/mx-chain-notifier-go/metrics"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
-	"github.com/multiversx/mx-chain-notifier-go/process"
-	"github.com/multiversx/mx-chain-notifier-go/rabbitmq"
-	"github.com/multiversx/mx-chain-notifier-go/redis"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/disabled"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher/hub"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher/ws"
+	"github.com/truststaking/mx-chain-notifier-go/facade"
+	"github.com/truststaking/mx-chain-notifier-go/filters"
+	"github.com/truststaking/mx-chain-notifier-go/metrics"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
+	"github.com/truststaking/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/rabbitmq"
+	"github.com/truststaking/mx-chain-notifier-go/redis"
 )
 
 type testNotifier struct {

@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	coreData "github.com/multiversx/mx-chain-core-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	notifierData "github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/mocks"
-	"github.com/multiversx/mx-chain-notifier-go/process/preprocess"
-	"github.com/multiversx/mx-chain-notifier-go/testdata"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	notifierData "github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/mocks"
+	"github.com/truststaking/mx-chain-notifier-go/process/preprocess"
+	"github.com/truststaking/mx-chain-notifier-go/testdata"
 )
 
 func TestPreProcessorV0_SaveBlock(t *testing.T) {

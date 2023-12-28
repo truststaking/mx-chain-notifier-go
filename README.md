@@ -50,7 +50,7 @@ CLI: run `--help` to get the command line parameters
 Before launching the proxy (notifier) service, it has to be configured so that it runs with the
 correct config variables.
 
-The main config file can be found [here](https://github.com/multiversx/mx-chain-notifier-go/blob/main/cmd/notifier/config/config.toml).
+The main config file can be found [here](https://github.com/truststaking/mx-chain-notifier-go/blob/main/cmd/notifier/config/config.toml).
 
 The supported config variables are:
 - `Host`: the host and port on which the http server listens on. Should be the same port
@@ -60,7 +60,7 @@ The supported config variables are:
 
 If observer connector is set to use BasicAuth with `UseAuthorization = true`, `Username` and `Password` has to be
 set here on events notifier, and `Auth` flag has to be enabled in
-[`api.toml`](https://github.com/multiversx/mx-chain-notifier-go/blob/main/cmd/notifier/config/api.toml) config file for events path.
+[`api.toml`](https://github.com/truststaking/mx-chain-notifier-go/blob/main/cmd/notifier/config/api.toml) config file for events path.
 For example:
 ```toml
 [APIPackages.events]
@@ -288,7 +288,7 @@ inner marshalled data like:
 ```
 
 There are multiple event types available, they can be found as constants in common package,
-[constants](https://github.com/multiversx/mx-chain-notifier-go/blob/main/common/constants.go). Below there is the event type together with the associated marshalled data type.
+[constants](https://github.com/truststaking/mx-chain-notifier-go/blob/main/common/constants.go). Below there is the event type together with the associated marshalled data type.
 - `all_events`
 ```json
 {

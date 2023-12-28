@@ -8,7 +8,7 @@ import (
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/testdata"
+	"github.com/truststaking/mx-chain-notifier-go/testdata"
 )
 
 func main() {

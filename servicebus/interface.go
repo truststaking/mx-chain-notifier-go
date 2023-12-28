@@ -1,8 +1,8 @@
 package servicebus
 
 import (
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // ServiceBusClient defines the behaviour of a rabbitMq client

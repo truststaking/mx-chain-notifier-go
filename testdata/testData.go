@@ -7,8 +7,8 @@ import (
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/data/smartContractResult"
 	"github.com/multiversx/mx-chain-core-go/data/transaction"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	notifierData "github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	notifierData "github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // OldSaveBlockData defines block events data before initial refactoring

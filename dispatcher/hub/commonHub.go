@@ -7,10 +7,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/data"
-	"github.com/multiversx/mx-chain-notifier-go/dispatcher"
-	"github.com/multiversx/mx-chain-notifier-go/filters"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
+	"github.com/truststaking/mx-chain-notifier-go/filters"
 )
 
 var log = logger.GetOrCreate("hub")

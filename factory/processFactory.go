@@ -6,10 +6,10 @@ import (
 	"github.com/multiversx/mx-chain-core-go/core/pubkeyConverter"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/process"
-	"github.com/multiversx/mx-chain-notifier-go/process/preprocess"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/process"
+	"github.com/truststaking/mx-chain-notifier-go/process/preprocess"
 )
 
 var log = logger.GetOrCreate("factory")
@@ -20,7 +20,7 @@ const bech32PubkeyConverterType = "bech32"
 type ArgsEventsHandlerFactory struct {
 	CheckDuplicates      bool
 	Locker               process.LockService
-	Publisher          	 process.Publisher
+	Publisher            process.Publisher
 	HubPublisher         process.Publisher
 	APIType              string
 	StatusMetricsHandler common.StatusMetricsHandler
@@ -54,6 +54,8 @@ func getPublisher(
 ) (process.Publisher, error) {
 	switch apiType {
 	case common.MessageQueuePublisherType:
+		return mqPublisher, nil
+	case common.ServiceBusQueuePublisherType:
 		return mqPublisher, nil
 	case common.WSPublisherType:
 		return hubPublisher, nil

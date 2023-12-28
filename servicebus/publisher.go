@@ -6,9 +6,9 @@ import (
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 var log = logger.GetOrCreate("servicebus")
@@ -67,23 +67,22 @@ func checkArgs(args ArgsServiceBusPublisher) error {
 		return common.ErrNilMarshaller
 	}
 
-	if args.Config.EventsExchange.Name == "" {
+	if args.Config.EventsExchange.Topic == "" {
 		return ErrInvalidServiceBusExchangeName
 	}
-
-	if args.Config.RevertEventsExchange.Name == "" {
+	if args.Config.RevertEventsExchange.Topic == "" {
 		return ErrInvalidServiceBusExchangeName
 	}
-	if args.Config.FinalizedEventsExchange.Name == "" {
+	if args.Config.FinalizedEventsExchange.Topic == "" {
 		return ErrInvalidServiceBusExchangeName
 	}
-	if args.Config.BlockTxsExchange.Name == "" {
+	if args.Config.BlockTxsExchange.Topic == "" {
 		return ErrInvalidServiceBusExchangeName
 	}
-	if args.Config.BlockScrsExchange.Name == "" {
+	if args.Config.BlockScrsExchange.Topic == "" {
 		return ErrInvalidServiceBusExchangeName
 	}
-	if args.Config.BlockEventsExchange.Name == "" {
+	if args.Config.BlockEventsExchange.Topic == "" {
 		return ErrInvalidServiceBusExchangeName
 	}
 

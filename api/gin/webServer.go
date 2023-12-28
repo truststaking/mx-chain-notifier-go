@@ -11,11 +11,11 @@ import (
 	"github.com/multiversx/mx-chain-communication-go/websocket"
 	"github.com/multiversx/mx-chain-core-go/core/check"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	apiErrors "github.com/multiversx/mx-chain-notifier-go/api/errors"
-	"github.com/multiversx/mx-chain-notifier-go/api/groups"
-	"github.com/multiversx/mx-chain-notifier-go/api/shared"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/config"
+	apiErrors "github.com/truststaking/mx-chain-notifier-go/api/errors"
+	"github.com/truststaking/mx-chain-notifier-go/api/groups"
+	"github.com/truststaking/mx-chain-notifier-go/api/shared"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 
 const (
@@ -99,13 +99,19 @@ func (w *webServer) Run() error {
 
 	var err error
 
-	if w.wasTriggered == true {
+	if w.wasTriggered {
 		log.Error("Web server has been already triggered successfuly once")
 		return nil
 	}
 
-	engine := gin.Default()
+	engine := gin.New()
 	engine.Use(cors.Default())
+	engine.Use(gin.Recovery())
+	engine.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "XOXNO is the best marketplace in the world!",
+		})
+	})
 
 	err = w.createGroups()
 	if err != nil {

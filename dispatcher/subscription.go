@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 	logger "github.com/multiversx/mx-chain-logger-go"
-	"github.com/multiversx/mx-chain-notifier-go/common"
-	"github.com/multiversx/mx-chain-notifier-go/data"
+	"github.com/truststaking/mx-chain-notifier-go/common"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 var log = logger.GetOrCreate("subscription")
