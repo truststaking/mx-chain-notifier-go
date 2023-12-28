@@ -1,4 +1,4 @@
-module github.com/multiversx/mx-chain-notifier-go
+module github.com/truststaking/mx-chain-notifier-go
 
 go 1.16
 
