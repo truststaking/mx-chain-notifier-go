@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	hostURL = "127.0.0.1:5000"
+	hostURL = "127.0.0.1:5001"
 	wsPath  = "/hub/ws"
 )
 
