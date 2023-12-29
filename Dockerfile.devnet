@@ -12,7 +12,7 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y openssl ca-certificates
 COPY --from=builder /multiversx/cmd/notifier /multiversx
 
-EXPOSE 8080
+EXPOSE 22111
 
 WORKDIR /multiversx
 
