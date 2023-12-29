@@ -127,8 +127,8 @@
 
     # The exchange which holds finalized block events
     [AzureServiceBus.FinalizedEventsExchange]
-        Topic = "mvx_events_raw_devnet"
-        Enabled = true
+        Topic = "finalized_events_dev"
+        Enabled = false
 
     # The exchange which holds block txs events
     [AzureServiceBus.BlockTxsExchange]
@@ -142,8 +142,8 @@
 
     # The exchange which holds block events with additional info
     [AzureServiceBus.BlockEventsExchange]
-        Topic = "block_events"
-        Enabled = false
+        Topic = "mvx_events_raw_devnet"
+        Enabled = true
 
 [AzureKeyVault]
     # If enabled, the notifier will use Azure KeyVault to retrieve secrets for all non empty values in the config

@@ -9,7 +9,7 @@ import (
 func main() {
 	args := HTTPClientWrapperArgs{
 		UseAuthorization:  false,
-		BaseUrl:           "http://localhost:5001",
+		BaseUrl:           "http://localhost:5000",
 		RequestTimeoutSec: 10,
 	}
 	httpClient, err := NewHTTPWrapperClient(args)

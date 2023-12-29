@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
+	"github.com/multiversx/mx-chain-core-go/core"
 	"github.com/truststaking/mx-chain-notifier-go/config"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
@@ -58,7 +59,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	var events data.BlockEventsWithOrder
 
 	err = json.Unmarshal(payload, &events)
-
+	log.Info("events", "events", events)
 	if err != nil {
 		log.Error("Error unmarshalling JSON data for service bus:", err)
 		return err
@@ -79,7 +80,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			continue
 		}
 
-		if identifier == "MultiESDTNFTTransfer" || identifier == "ESDTNFTTransfer" || identifier == "ESDTTransfer" {
+		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
 			// pubKeyConverter, err := pubkeyConverter.NewHexPubkeyConverter(32)
 			// if err != nil {
 			// 	return err
@@ -95,7 +96,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			// }
 		}
 
-		if identifier == "ESDTNFTCreate" || identifier == "ESDTNFTBurn" || identifier == "ESDTNFTUpdateAttributes" || identifier == "ESDTNFTAddURI" || identifier == "ESDTNFTAddQuantity" || identifier == "MultiESDTNFTTransfer" || identifier == "ESDTNFTTransfer" || identifier == "ESDTTransfer" {
+		if identifier == core.BuiltInFunctionESDTNFTCreate || identifier == core.BuiltInFunctionESDTNFTBurn || identifier == core.BuiltInFunctionESDTNFTUpdateAttributes || identifier == core.BuiltInFunctionESDTNFTAddURI || identifier == core.BuiltInFunctionESDTNFTAddQuantity || identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
 			hexStr := hex.EncodeToString(events.Events[i].Topics[1])
 			if hexStr == "" {
 				isNFT = "false"
@@ -103,19 +104,13 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			sessionId = string(events.Events[i].Topics[0])
 		}
 
-		event, err := json.Marshal(events.Events[i])
-		if err != nil {
-			log.Error("Error marshalling JSON data for service bus:", err)
-			return err
-		}
-
 		msg := &azservicebus.Message{
-			Body:                  event,
+			Body:                  payload,
 			SessionID:             &sessionId,
 			ApplicationProperties: make(map[string]interface{})}
 		msg.ApplicationProperties["Address"] = events.Events[i].Address
 
-		if identifier == "MultiESDTNFTTransfer" {
+		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer {
 			msg.ApplicationProperties["isNFT"] = isNFT
 		}
 
