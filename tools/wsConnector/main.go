@@ -57,7 +57,7 @@ func newWSObsClient(marshaller marshal.Marshalizer) (*wsObsClient, error) {
 	port := 22111
 	wsHost, err := wsFactory.CreateWebSocketHost(wsFactory.ArgsWebSocketHost{
 		WebSocketConfig: wsData.WebSocketConfig{
-			URL:                     "127.0.0.1:" + fmt.Sprintf("%d", port),
+			URL:                     "localhost:" + fmt.Sprintf("%d", port),
 			WithAcknowledge:         true,
 			Mode:                    "client",
 			RetryDurationInSec:      5,
