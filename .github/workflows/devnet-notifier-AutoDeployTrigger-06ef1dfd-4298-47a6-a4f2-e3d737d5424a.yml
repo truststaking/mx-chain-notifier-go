@@ -1,0 +1,42 @@
+name: Trigger auto deployment for devnet-notifier
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ xoxno ]
+    paths:
+    - '**'
+    - '.github/workflows/devnet-notifier-AutoDeployTrigger-06ef1dfd-4298-47a6-a4f2-e3d737d5424a.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.DEVNETNOTIFIER_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: xoxno.azurecr.io
+          registryUsername: ${{ secrets.DEVNETNOTIFIER_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.DEVNETNOTIFIER_REGISTRY_PASSWORD }}
+          containerAppName: devnet-notifier
+          resourceGroup: XOXNO
+          imageToBuild: xoxno.azurecr.io/devnet-notifier:${{ github.sha }}
+          
+
+     
+
