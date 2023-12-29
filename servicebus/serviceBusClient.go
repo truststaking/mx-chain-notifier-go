@@ -50,7 +50,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	defer sb.pubMut.Unlock()
 
 	sender, err := sb.client.NewSender(exchangeConfig.Topic, nil)
-
+	log.Info("topic", "topic", exchangeConfig.Topic)
 	if err != nil {
 		log.Error("could not send the payload to azure service bus", "err", err.Error())
 		return err
@@ -75,6 +75,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	for i := 0; i < len(events.Events); i++ {
 		identifier := events.Events[i].Identifier
 		sessionId := events.Events[i].Address
+		log.Info("events", "events", events.Events[i])
 		isNFT := "true"
 		if identifier == "completedTxEvent" || identifier == "signalError" || identifier == "internalVMErrors" || identifier == "writeLog" {
 			continue
@@ -96,7 +97,14 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			// }
 		}
 
-		if identifier == core.BuiltInFunctionESDTNFTCreate || identifier == core.BuiltInFunctionESDTNFTBurn || identifier == core.BuiltInFunctionESDTNFTUpdateAttributes || identifier == core.BuiltInFunctionESDTNFTAddURI || identifier == core.BuiltInFunctionESDTNFTAddQuantity || identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
+		if identifier == core.BuiltInFunctionESDTNFTCreate ||
+			identifier == core.BuiltInFunctionESDTNFTBurn ||
+			identifier == core.BuiltInFunctionESDTNFTUpdateAttributes ||
+			identifier == core.BuiltInFunctionESDTNFTAddURI ||
+			identifier == core.BuiltInFunctionESDTNFTAddQuantity ||
+			identifier == core.BuiltInFunctionMultiESDTNFTTransfer ||
+			identifier == core.BuiltInFunctionESDTNFTTransfer ||
+			identifier == core.BuiltInFunctionESDTTransfer {
 			hexStr := hex.EncodeToString(events.Events[i].Topics[1])
 			if hexStr == "" {
 				isNFT = "false"
@@ -108,13 +116,13 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			Body:                  payload,
 			SessionID:             &sessionId,
 			ApplicationProperties: make(map[string]interface{})}
+
 		msg.ApplicationProperties["Address"] = events.Events[i].Address
+		msg.ApplicationProperties["Identifier"] = events.Events[i].Identifier
 
 		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer {
 			msg.ApplicationProperties["isNFT"] = isNFT
 		}
-
-		msg.ApplicationProperties["Identifier"] = events.Events[i].Identifier
 		err = currentMessageBatch.AddMessage(msg, nil)
 
 		if errors.Is(err, azservicebus.ErrMessageTooLarge) {
