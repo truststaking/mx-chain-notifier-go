@@ -113,9 +113,13 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			}
 			sessionId = string(events.Events[i].Topics[0])
 		}
-
+		event, err := json.Marshal(events.Events[i])
+		if err != nil {
+			log.Error("Error marshalling JSON data for service bus:", err)
+			return err
+		}
 		msg := &azservicebus.Message{
-			Body:                  payload,
+			Body:                  event,
 			SessionID:             &sessionId,
 			ApplicationProperties: make(map[string]interface{})}
 
