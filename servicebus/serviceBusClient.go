@@ -65,9 +65,10 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		return err
 	}
 
-	currentMessageBatch, err := sender.NewMessageBatch(context.Background(), nil)
+	currentMessageBatch, err := sender.NewMessageBatch(context.TODO(), nil)
 	log.Info("currentMessageBatch", "currentMessageBatch", currentMessageBatch)
 	if err != nil {
+		log.Info("Error creating message batch for service bus:", err.Error())
 		log.Error("error creating message batch for service bus:", err)
 		return err
 	}
@@ -135,7 +136,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			log.Info("Message batch is full. Sending it and creating a new one.")
 
 			// send what we have since the batch is full
-			err := sender.SendMessageBatch(context.Background(), currentMessageBatch, nil)
+			err := sender.SendMessageBatch(context.TODO(), currentMessageBatch, nil)
 
 			if err != nil {
 				// TODO: handle loop retry
@@ -144,7 +145,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			}
 
 			// Create a new batch and retry adding this message to our batch.
-			newBatch, err := sender.NewMessageBatch(context.Background(), nil)
+			newBatch, err := sender.NewMessageBatch(context.TODO(), nil)
 
 			if err != nil {
 				log.Error("Error creating a new batch of messages", err)
@@ -164,7 +165,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 
 	// check if any messages are remaining to be sent.
 	if currentMessageBatch.NumMessages() > 0 {
-		err := sender.SendMessageBatch(context.Background(), currentMessageBatch, nil)
+		err := sender.SendMessageBatch(context.TODO(), currentMessageBatch, nil)
 		log.Info("currentMessageBatch", "currentMessageBatch", currentMessageBatch)
 		log.Info("Messages sent")
 		log.LogIfError(err)
@@ -174,7 +175,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		}
 	}
 
-	sender.Close(context.Background())
+	sender.Close(context.TODO())
 	return nil
 }
 
