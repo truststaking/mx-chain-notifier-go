@@ -28,8 +28,8 @@ type Event struct {
 
 // Event holds event data
 type EventDuplicateCheck struct {
-	Address        string   `json:"address"`
-	Identifier     string   `json:"identifier"`
+	Address        []byte   `json:"address"`
+	Identifier     []byte   `json:"identifier"`
 	Topics         [][]byte `json:"topics"`
 	OriginalTxHash string   `json:"originalTxHash"`
 }

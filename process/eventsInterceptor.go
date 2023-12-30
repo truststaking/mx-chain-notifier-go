@@ -98,17 +98,17 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		}
 		for _, event := range logData.Log.Events {
 			eventIdentifier := string(event.Identifier)
-			originalTxHash := logData.TxHash
+			originalTxHash := logData.GetTxHash()
 			scResult, exists := scrs[logData.TxHash]
 
 			if exists {
-				originalTxHash = string(scResult.OriginalTxHash)
+				originalTxHash = string(scResult.GetOriginalTxHash())
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
 				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, data.EventDuplicateCheck {
-					Address:        string(event.Address),
-					Identifier:     eventIdentifier,
+					Address:        event.Address,
+					Identifier:     event.Identifier,
 					Topics:         event.Topics,
 					OriginalTxHash: originalTxHash,
 				})
