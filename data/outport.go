@@ -31,7 +31,7 @@ type EventDuplicateCheck struct {
 	Address        []byte   `json:"address"`
 	Identifier     []byte   `json:"identifier"`
 	Topics         [][]byte `json:"topics"`
-	OriginalTxHash string   `json:"originalTxHash"`
+	OriginalTxHash []byte   `json:"originalTxHash"`
 }
 
 // BlockEvents holds events data for a block

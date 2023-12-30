@@ -47,6 +47,7 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 	if err != nil {
 		return false, err
 	}
+	log.Info("originalTxHash", "originalTxHash", originalTxHash)
 	eventExists, err := r.client.HasEvent(ctx, originalTxHash, string(jsonData))
 	if err != nil {
 		return false, err
