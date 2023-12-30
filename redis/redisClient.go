@@ -36,9 +36,10 @@ func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, va
 	if err != nil {
 		return 0, err
 	}
+	log.Info("jsonData", "jsonData", string(jsonData))
 
-	index, err := rc.redis.RPushX(ctx, key, jsonData).Result()
-
+	index, err := rc.redis.RPushX(ctx, key, string(jsonData)).Result()
+	log.Info("index event", "index", index)
 	if err != nil {
 		return 0, err
 	}
