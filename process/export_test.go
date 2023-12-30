@@ -2,6 +2,7 @@ package process
 
 import (
 	"github.com/multiversx/mx-chain-core-go/data/outport"
+	"github.com/multiversx/mx-chain-core-go/data/smartContractResult"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
@@ -12,5 +13,6 @@ func (eh *eventsHandler) TryCheckProcessedWithRetry(prefix, blockHash string) bo
 
 // GetLogEventsFromTransactionsPool exports internal method for testing
 func (ei *eventsInterceptor) GetLogEventsFromTransactionsPool(logs []*outport.LogData) []data.Event {
-	return ei.getLogEventsFromTransactionsPool(logs)
+	scrHashes := make(map[string]*smartContractResult.SmartContractResult)
+	return ei.getLogEventsFromTransactionsPool(logs, scrHashes)
 }

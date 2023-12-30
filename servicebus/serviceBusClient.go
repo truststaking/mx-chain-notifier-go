@@ -50,7 +50,6 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	defer sb.pubMut.Unlock()
 
 	sender, err := sb.client.NewSender(exchangeConfig.Topic, nil)
-	log.Info("topic", "topic", exchangeConfig.Topic)
 	if err != nil {
 		log.Error("could not send the payload to azure service bus", "err", err.Error())
 		return err
@@ -59,16 +58,13 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	var events data.BlockEventsWithOrder
 
 	err = json.Unmarshal(payload, &events)
-	log.Info("events", "events", events)
 	if err != nil {
 		log.Error("Error unmarshalling JSON data for service bus:", err)
 		return err
 	}
 
 	currentMessageBatch, err := sender.NewMessageBatch(context.TODO(), nil)
-	log.Info("currentMessageBatch", "currentMessageBatch", currentMessageBatch)
 	if err != nil {
-		log.Info("Error creating message batch for service bus:", err.Error())
 		log.Error("error creating message batch for service bus:", err)
 		return err
 	}
@@ -76,27 +72,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	for i := 0; i < len(events.Events); i++ {
 		identifier := events.Events[i].Identifier
 		sessionId := events.Events[i].Address
-		log.Info("events loop", "events loop", events.Events[i])
 		isNFT := "true"
-		if identifier == "completedTxEvent" || identifier == "signalError" || identifier == "internalVMErrors" || identifier == "writeLog" {
-			continue
-		}
-
-		// if identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
-		// 	// pubKeyConverter, err := pubkeyConverter.NewHexPubkeyConverter(32)
-		// 	// if err != nil {
-		// 	// 	return err
-		// 	// }
-		// 	// reciver, err := pubKeyConverter.Encode(events.Events[i].Topics[3])
-		// 	// if err != nil {
-		// 	// 	return err
-		// 	// }
-		// 	// receiverShard := getShardOfAddress(reciver)
-
-		// 	// if receiverShard != events.Events[i].LogAddressShard {
-		// 	// 	continue
-		// 	// }
-		// }
 
 		if identifier == core.BuiltInFunctionESDTNFTCreate ||
 			identifier == core.BuiltInFunctionESDTNFTBurn ||
@@ -106,7 +82,6 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			identifier == core.BuiltInFunctionMultiESDTNFTTransfer ||
 			identifier == core.BuiltInFunctionESDTNFTTransfer ||
 			identifier == core.BuiltInFunctionESDTTransfer {
-			log.Info("identifier", "identifier", identifier)
 			hexStr := hex.EncodeToString(events.Events[i].Topics[1])
 			if hexStr == "" {
 				isNFT = "false"
@@ -170,9 +145,6 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 	// check if any messages are remaining to be sent.
 	if currentMessageBatch.NumMessages() > 0 {
 		err := sender.SendMessageBatch(context.TODO(), currentMessageBatch, nil)
-		log.Info("currentMessageBatch", "currentMessageBatch", currentMessageBatch)
-		log.Info("Messages sent")
-		log.LogIfError(err)
 		if err != nil {
 			log.Error("Error send remaining messages in batch", err.Error())
 			return err
