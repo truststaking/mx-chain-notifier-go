@@ -1,6 +1,10 @@
 package mocks
 
-import "context"
+import (
+	"context"
+
+	"github.com/multiversx/mx-chain-core-go/data/transaction"
+)
 
 // LockerStub implements LockService interface
 type LockerStub struct {
@@ -13,6 +17,11 @@ func (ls *LockerStub) IsEventProcessed(ctx context.Context, blockHash string) (b
 	if ls.IsEventProcessedCalled != nil {
 		return ls.IsEventProcessedCalled(ctx, blockHash)
 	}
+
+	return false, nil
+}
+
+func (ls *LockerStub) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error) {
 
 	return false, nil
 }

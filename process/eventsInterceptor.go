@@ -1,6 +1,7 @@
 package process
 
 import (
+	"context"
 	"encoding/hex"
 
 	"github.com/multiversx/mx-chain-core-go/core"
@@ -21,10 +22,12 @@ type logEvent struct {
 // ArgsEventsInterceptor defines the arguments needed for creating an events interceptor instance
 type ArgsEventsInterceptor struct {
 	PubKeyConverter core.PubkeyConverter
+	LockService     LockService
 }
 
 type eventsInterceptor struct {
 	pubKeyConverter core.PubkeyConverter
+	locker          LockService
 }
 
 // NewEventsInterceptor creates a new eventsInterceptor instance
@@ -33,8 +36,13 @@ func NewEventsInterceptor(args ArgsEventsInterceptor) (*eventsInterceptor, error
 		return nil, ErrNilPubKeyConverter
 	}
 
+	if check.IfNil(args.LockService) {
+		return nil, ErrNilLockService
+	}
+
 	return &eventsInterceptor{
 		pubKeyConverter: args.PubKeyConverter,
+		locker:          args.LockService,
 	}, nil
 }
 
@@ -88,26 +96,38 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		if check.IfNilReflect(logData.Log) {
 			continue
 		}
-		var tmpLogEvents []*logEvent
-		skipTransfers := false
+		// var tmpLogEvents []*logEvent
+		// skipTransfers := false
 		for _, event := range logData.Log.Events {
 			eventIdentifier := string(event.Identifier)
 			originalTxHash := logData.TxHash
 			scResult, exists := scrs[logData.TxHash]
-			if eventIdentifier == core.SignalErrorOperation || eventIdentifier == core.InternalVMErrorsOperation {
-				if !exists {
-					skipTransfers = true
-				}
-				log.Debug("eventsInterceptor: received signalError or internalVMErrors event from log event",
-					"txHash", logData.TxHash,
-					"isSCResult", exists,
-					"skipTransfers", skipTransfers,
-					"originalTxHash", originalTxHash,
-					"txHash", logData.TxHash,
-				)
-			}
+			// if eventIdentifier == core.SignalErrorOperation || eventIdentifier == core.InternalVMErrorsOperation {
+			// 	if !exists {
+			// 		skipTransfers = true
+			// 	}
+			// 	log.Debug("eventsInterceptor: received signalError or internalVMErrors event from log event",
+			// 		"txHash", logData.TxHash,
+			// 		"isSCResult", exists,
+			// 		"skipTransfers", skipTransfers,
+			// 		"originalTxHash", originalTxHash,
+			// 		"txHash", logData.TxHash,
+			// 	)
+			// }
 			if exists {
 				originalTxHash = string(scResult.OriginalTxHash)
+			}
+			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
+				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, event)
+				if err != nil {
+					log.Error("eventsInterceptor: failed to check cross shard confirmation", "error", err)
+					continue
+				}
+				if skipEvent {
+					log.Debug("eventsInterceptor: skip cross shard confirmation event", "txHash", logData.TxHash, "originalTxHash", originalTxHash, "eventIdentifier", eventIdentifier)
+					continue
+				}
+
 			}
 			le := &logEvent{
 				EventHandler:   event,
@@ -115,32 +135,30 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 				OriginalTxHash: originalTxHash,
 			}
 
-			tmpLogEvents = append(tmpLogEvents, le)
+			logEvents = append(logEvents, le)
+
 		}
-		if skipTransfers {
-			var filteredItems []*logEvent
-			for _, item := range tmpLogEvents {
-				identifier := string(item.EventHandler.GetIdentifier())
-				if identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
-					continue
-				}
-				filteredItems = append(filteredItems, item)
-			}
-			logEvents = append(logEvents, filteredItems...)
-		} else {
-			logEvents = append(logEvents, tmpLogEvents...)
-		}
+		// if skipTransfers {
+		// 	var filteredItems []*logEvent
+		// 	for _, item := range tmpLogEvents {
+		// 		identifier := string(item.EventHandler.GetIdentifier())
+		// 		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
+		// 			continue
+		// 		}
+		// 		filteredItems = append(filteredItems, item)
+		// 	}
+		// 	logEvents = append(logEvents, filteredItems...)
+		// } else {
+		// 	logEvents = append(logEvents, tmpLogEvents...)
+		// }
 	}
 
 	if len(logEvents) == 0 {
 		return nil
 	}
-	uniqueEvents := uniqueLogEvents(logEvents)
-	if len(uniqueEvents) == 0 {
-		return nil
-	}
-	events := make([]data.Event, 0, len(uniqueEvents))
-	for _, event := range uniqueEvents {
+
+	events := make([]data.Event, 0, len(logEvents))
+	for _, event := range logEvents {
 		if event == nil || check.IfNil(event.EventHandler) {
 			continue
 		}
@@ -169,25 +187,6 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 	}
 
 	return events
-}
-
-func uniqueLogEvents(events []*logEvent) []*logEvent {
-	var unique []*logEvent
-	for _, event := range events {
-		isDuplicate := false
-		for _, uniqueEvent := range unique {
-			if event.EventHandler.Equal(uniqueEvent.EventHandler) && event.OriginalTxHash == uniqueEvent.OriginalTxHash {
-				isDuplicate = true
-				log.Info("eventsInterceptor: received duplicated event", "event", event.EventHandler.GoString(), "txHash", event.TxHash, "originalTxHash", event.OriginalTxHash)
-				break
-			}
-		}
-		if !isDuplicate {
-			unique = append(unique, event)
-		}
-	}
-
-	return unique
 }
 
 // IsInterfaceNil returns whether the interface is nil

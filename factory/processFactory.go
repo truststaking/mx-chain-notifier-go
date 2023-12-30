@@ -65,7 +65,7 @@ func getPublisher(
 }
 
 // CreateEventsInterceptor will create the events interceptor
-func CreateEventsInterceptor(cfg config.GeneralConfig) (process.EventsInterceptor, error) {
+func CreateEventsInterceptor(cfg config.GeneralConfig, locker process.LockService) (process.EventsInterceptor, error) {
 	pubKeyConverter, err := getPubKeyConverter(cfg)
 	if err != nil {
 		return nil, err
@@ -73,6 +73,7 @@ func CreateEventsInterceptor(cfg config.GeneralConfig) (process.EventsIntercepto
 
 	argsEventsInterceptor := process.ArgsEventsInterceptor{
 		PubKeyConverter: pubKeyConverter,
+		LockService:     locker,
 	}
 
 	return process.NewEventsInterceptor(argsEventsInterceptor)

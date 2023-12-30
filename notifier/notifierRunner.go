@@ -75,7 +75,7 @@ func (nr *notifierRunner) Start() error {
 		return err
 	}
 
-	eventsInterceptor, err := factory.CreateEventsInterceptor(nr.configs.MainConfig.General)
+	eventsInterceptor, err := factory.CreateEventsInterceptor(nr.configs.MainConfig.General, lockService)
 	if err != nil {
 		return err
 	}

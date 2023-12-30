@@ -28,9 +28,8 @@ func NewConsumerMock() *ConsumerMock {
 func (c *ConsumerMock) Receive(events []data.Event) {
 	c.mut.Lock()
 	defer c.mut.Unlock()
-	for _, event := range events {
-		c.collectedEvents = append(c.collectedEvents, event)
-	}
+
+	c.collectedEvents = append(c.collectedEvents, events...)
 }
 
 // CollectedEvents -

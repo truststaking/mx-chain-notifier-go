@@ -107,34 +107,6 @@ func (nf *notifierFacade) HandlePushEventsV2(allEvents data.ArgsSaveBlockData) e
 	return nil
 }
 
-// HandlePushEventsV1 will handle push events received from observer
-// It splits block data and handles log, txs and srcs events separately
-// TODO: remove this implementation
-func (nf *notifierFacade) HandlePushEventsV1(eventsData data.SaveBlockData) error {
-	pushEvents := data.BlockEvents{
-		Hash:   eventsData.Hash,
-		Events: eventsData.LogEvents,
-	}
-	err := nf.eventsHandler.HandlePushEvents(pushEvents)
-	if err != nil {
-		return err
-	}
-
-	txs := data.BlockTxs{
-		Hash: eventsData.Hash,
-		Txs:  eventsData.Txs,
-	}
-	nf.eventsHandler.HandleBlockTxs(txs)
-
-	scrs := data.BlockScrs{
-		Hash: eventsData.Hash,
-		Scrs: eventsData.Scrs,
-	}
-	nf.eventsHandler.HandleBlockScrs(scrs)
-
-	return nil
-}
-
 // HandleRevertEvents will handle revents events received from observer
 func (nf *notifierFacade) HandleRevertEvents(events data.RevertBlock) {
 	nf.eventsHandler.HandleRevertEvents(events)

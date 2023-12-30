@@ -2,10 +2,12 @@ package redis
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-core-go/data/transaction"
 )
 
 type ArgsRedlockWrapper struct {
@@ -38,6 +40,35 @@ func NewRedlockWrapper(args ArgsRedlockWrapper) (*redlockWrapper, error) {
 // IsEventProcessed returns wether the item is already locked
 func (r *redlockWrapper) IsEventProcessed(ctx context.Context, blockHash string) (bool, error) {
 	return r.client.SetEntry(ctx, blockHash, true, r.ttl)
+}
+
+func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error) {
+	eventsList, err := r.client.GetEventList(ctx, originalTxHash)
+	if err != nil {
+		return false, err
+	}
+	if len(eventsList) == 0 {
+		_, err = r.client.AddEventToList(ctx, originalTxHash, event, time.Minute)
+		if err != nil {
+			return false, err
+		}
+		return false, nil
+	} else {
+		isConfirmation := false
+		for _, eventJSON := range eventsList {
+		
+			var savedEvent *transaction.Event
+			err = json.Unmarshal([]byte(eventJSON), &savedEvent)
+			if err != nil {
+				return false, err
+			}
+			if event.Equal(savedEvent) {
+				isConfirmation = true
+				break
+			}
+		}
+		return isConfirmation, nil
+	}
 }
 
 // HasConnection returns true if the redis client is connected
