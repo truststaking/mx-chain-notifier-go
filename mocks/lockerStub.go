@@ -3,7 +3,7 @@ package mocks
 import (
 	"context"
 
-	"github.com/multiversx/mx-chain-core-go/data/transaction"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // LockerStub implements LockService interface
@@ -21,7 +21,7 @@ func (ls *LockerStub) IsEventProcessed(ctx context.Context, blockHash string) (b
 	return false, nil
 }
 
-func (ls *LockerStub) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error) {
+func (ls *LockerStub) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event data.EventDuplicateCheck) (bool, error) {
 
 	return false, nil
 }

@@ -106,7 +106,12 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
-				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, event)
+				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, data.EventDuplicateCheck {
+					Address:        string(event.Address),
+					Identifier:     eventIdentifier,
+					Topics:         event.Topics,
+					OriginalTxHash: originalTxHash,
+				})
 				if err != nil {
 					log.Error("eventsInterceptor: failed to check cross shard confirmation", "error", err)
 					continue

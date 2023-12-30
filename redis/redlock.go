@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-core-go/data/transaction"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 type ArgsRedlockWrapper struct {
@@ -42,7 +42,7 @@ func (r *redlockWrapper) IsEventProcessed(ctx context.Context, blockHash string)
 	return r.client.SetEntry(ctx, blockHash, true, r.ttl)
 }
 
-func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error) {
+func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event data.EventDuplicateCheck) (bool, error) {
 	jsonData, err := json.Marshal(event)
 	if err != nil {
 		return false, err
@@ -56,7 +56,7 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 		return true, nil
 	}
 
-	_, err = r.client.AddEventToList(ctx, originalTxHash, event, time.Minute)
+	_, err = r.client.AddEventToList(ctx, originalTxHash, string(jsonData), time.Minute)
 	if err != nil {
 		return false, err
 	}

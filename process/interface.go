@@ -3,7 +3,6 @@ package process
 import (
 	"context"
 
-	"github.com/multiversx/mx-chain-core-go/data/transaction"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
@@ -11,7 +10,7 @@ import (
 // It makes sure that a duplicated entry is not processed multiple times.
 type LockService interface {
 	IsEventProcessed(ctx context.Context, blockHash string) (bool, error)
-	IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error)
+	IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event data.EventDuplicateCheck) (bool, error)
 	HasConnection(ctx context.Context) bool
 	IsInterfaceNil() bool
 }

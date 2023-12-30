@@ -3,8 +3,8 @@ package redis
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	logger "github.com/multiversx/mx-chain-logger-go"
+	"github.com/redis/go-redis/v9"
 	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 

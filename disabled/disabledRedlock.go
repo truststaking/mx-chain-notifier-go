@@ -3,7 +3,7 @@ package disabled
 import (
 	"context"
 
-	"github.com/multiversx/mx-chain-core-go/data/transaction"
+	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 type disabledRedlockWrapper struct {
@@ -19,7 +19,7 @@ func (drw *disabledRedlockWrapper) IsEventProcessed(_ context.Context, _ string)
 	return true, nil
 }
 
-func (drw *disabledRedlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error) {
+func (drw *disabledRedlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event data.EventDuplicateCheck) (bool, error) {
 	return true, nil
 }
 

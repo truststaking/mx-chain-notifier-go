@@ -4,8 +4,6 @@ import (
 	"context"
 	"sync"
 	"time"
-
-	"github.com/multiversx/mx-chain-core-go/data/transaction"
 )
 
 // RedisClientMock -
@@ -43,7 +41,7 @@ func (rc *RedisClientMock) SetEntry(_ context.Context, key string, value bool, t
 }
 
 // SetEntry will try to update a key value entry in redis database
-func (rc *RedisClientMock) AddEventToList(ctx context.Context, key string, value *transaction.Event, ttl time.Duration) (int64, error) {
+func (rc *RedisClientMock) AddEventToList(ctx context.Context, key string, value string, ttl time.Duration) (int64, error) {
 	rc.mut.Lock()
 	defer rc.mut.Unlock()
 	return 1, nil

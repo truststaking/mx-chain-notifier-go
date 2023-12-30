@@ -2,11 +2,9 @@ package redis
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 
-	"github.com/go-redis/redis/v8"
-	"github.com/multiversx/mx-chain-core-go/data/transaction"
+	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -31,13 +29,8 @@ func (rc *redisClientWrapper) SetEntry(ctx context.Context, key string, value bo
 }
 
 // SetEntry will try to update a key value entry in redis database
-func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, value *transaction.Event, ttl time.Duration) (int64, error) {
-	jsonData, err := json.Marshal(value)
-	if err != nil {
-		return 0, err
-	}
-
-	index, err := rc.redis.SAdd(ctx, key, string(jsonData)).Result()
+func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, value string, ttl time.Duration) (int64, error) {
+	index, err := rc.redis.SAdd(ctx, key, value).Result()
 	if err != nil {
 		return 0, err
 	}

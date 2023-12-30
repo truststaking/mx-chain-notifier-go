@@ -26,6 +26,14 @@ type Event struct {
 	OriginalTxHash string   `json:"originalTxHash"`
 }
 
+// Event holds event data
+type EventDuplicateCheck struct {
+	Address        string   `json:"address"`
+	Identifier     string   `json:"identifier"`
+	Topics         [][]byte `json:"topics"`
+	OriginalTxHash string   `json:"originalTxHash"`
+}
+
 // BlockEvents holds events data for a block
 type BlockEvents struct {
 	Hash      string  `json:"hash"`
