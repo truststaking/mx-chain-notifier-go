@@ -105,6 +105,8 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 					"txHash", logData.TxHash,
 					"isSCResult", exists,
 					"skipTransfers", skipTransfers,
+					"originalTxHash", originalTxHash,
+					"txHash", logData.TxHash,
 				)
 			}
 			le := &logEvent{
@@ -152,6 +154,8 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		log.Debug("eventsInterceptor: received event from address",
 			"address", bech32Address,
 			"identifier", eventIdentifier,
+			"txHash", event.TxHash,
+			"originalTxHash", event.OriginalTxHash,
 		)
 
 		events = append(events, data.Event{
@@ -174,7 +178,7 @@ func uniqueLogEvents(events []*logEvent) []*logEvent {
 		for _, uniqueEvent := range unique {
 			if event.EventHandler.Equal(uniqueEvent.EventHandler) && event.OriginalTxHash == uniqueEvent.OriginalTxHash {
 				isDuplicate = true
-				log.Info("eventsInterceptor: received duplicated event", "event", event.EventHandler.GoString(), "txHash", event.TxHash)
+				log.Info("eventsInterceptor: received duplicated event", "event", event.EventHandler.GoString(), "txHash", event.TxHash, "originalTxHash", event.OriginalTxHash)
 				break
 			}
 		}
