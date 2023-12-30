@@ -48,7 +48,7 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 		return false, err
 	}
 	log.Info("originalTxHash", "originalTxHash", originalTxHash)
-	eventExists, err := r.client.HasEvent(ctx, originalTxHash, string(jsonData))
+	eventExists, err := r.client.HasEvent(ctx, originalTxHash, jsonData)
 	if err != nil {
 		return false, err
 	}
@@ -57,7 +57,7 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 		return true, nil
 	}
 
-	_, err = r.client.AddEventToList(ctx, originalTxHash, string(jsonData), time.Minute)
+	_, err = r.client.AddEventToList(ctx, originalTxHash, jsonData, time.Minute)
 	if err != nil {
 		return false, err
 	}

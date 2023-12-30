@@ -106,10 +106,10 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
-				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, data.EventDuplicateCheck {
-					Address:        event.Address,
-					Identifier:     event.Identifier,
-					Topics:         event.Topics,
+				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, data.EventDuplicateCheck{
+					Address:    event.Address,
+					Identifier: event.Identifier,
+					Topics:     event.Topics,
 				})
 				if err != nil {
 					log.Error("eventsInterceptor: failed to check cross shard confirmation", "error", err)
@@ -147,12 +147,12 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		}
 		eventIdentifier := string(event.EventHandler.GetIdentifier())
 
-		log.Debug("eventsInterceptor: received event from address",
-			"address", bech32Address,
-			"identifier", eventIdentifier,
-			"txHash", event.TxHash,
-			"originalTxHash", event.OriginalTxHash,
-		)
+		// log.Debug("eventsInterceptor: received event from address",
+		// 	"address", bech32Address,
+		// 	"identifier", eventIdentifier,
+		// 	"txHash", event.TxHash,
+		// 	"originalTxHash", event.OriginalTxHash,
+		// )
 
 		events = append(events, data.Event{
 			Address:        bech32Address,

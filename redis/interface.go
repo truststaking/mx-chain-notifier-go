@@ -19,8 +19,8 @@ type LockService interface {
 // RedLockClient defines the behaviour of a cache handler component
 type RedLockClient interface {
 	SetEntry(ctx context.Context, key string, value bool, ttl time.Duration) (bool, error)
-	AddEventToList(ctx context.Context, key string, value string, ttl time.Duration) (int64, error)
-	HasEvent(ctx context.Context, key string, value string) (bool, error)
+	AddEventToList(ctx context.Context, key string, value []byte, ttl time.Duration) (int64, error)
+	HasEvent(ctx context.Context, key string, value []byte) (bool, error)
 	Ping(ctx context.Context) (string, error)
 	IsConnected(ctx context.Context) bool
 	IsInterfaceNil() bool

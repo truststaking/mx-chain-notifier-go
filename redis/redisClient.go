@@ -29,7 +29,7 @@ func (rc *redisClientWrapper) SetEntry(ctx context.Context, key string, value bo
 }
 
 // SetEntry will try to update a key value entry in redis database
-func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, value string, ttl time.Duration) (int64, error) {
+func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, value []byte, ttl time.Duration) (int64, error) {
 	index, err := rc.redis.SAdd(ctx, key, value).Result()
 	if err != nil {
 		return 0, err
@@ -44,7 +44,7 @@ func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, va
 }
 
 // GetEventList will try to get the list of events from redis database
-func (rc *redisClientWrapper) HasEvent(ctx context.Context, key string, value string) (bool, error) {
+func (rc *redisClientWrapper) HasEvent(ctx context.Context, key string, value []byte) (bool, error) {
 	return rc.redis.SIsMember(ctx, key, value).Result()
 }
 

@@ -21,13 +21,13 @@ func (rc *RedisClientStub) SetEntry(_ context.Context, key string, value bool, t
 	return false, nil
 }
 // SetEntry will try to update a key value entry in redis database
-func (rc *RedisClientStub) AddEventToList(ctx context.Context, key string, value string, ttl time.Duration) (int64, error) {
+func (rc *RedisClientStub) AddEventToList(ctx context.Context, key string, value []byte, ttl time.Duration) (int64, error) {
 	
 	return 1, nil
 }
 
 // GetEventList will try to get the list of events from redis database
-func (rc *RedisClientStub) HasEvent(ctx context.Context, key string, value string) (bool, error) {
+func (rc *RedisClientStub) HasEvent(ctx context.Context, key string, value []byte) (bool, error) {
 
 	return true, nil
 }

@@ -41,14 +41,14 @@ func (rc *RedisClientMock) SetEntry(_ context.Context, key string, value bool, t
 }
 
 // SetEntry will try to update a key value entry in redis database
-func (rc *RedisClientMock) AddEventToList(ctx context.Context, key string, value string, ttl time.Duration) (int64, error) {
+func (rc *RedisClientMock) AddEventToList(ctx context.Context, key string, value []byte, ttl time.Duration) (int64, error) {
 	rc.mut.Lock()
 	defer rc.mut.Unlock()
 	return 1, nil
 }
 
 // GetEventList will try to get the list of events from redis database
-func (rc *RedisClientMock) HasEvent(ctx context.Context, key string, value string) (bool, error) {
+func (rc *RedisClientMock) HasEvent(ctx context.Context, key string, value []byte) (bool, error) {
 	rc.mut.Lock()
 	defer rc.mut.Unlock()
 	return true, nil
