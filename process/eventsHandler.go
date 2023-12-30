@@ -308,7 +308,7 @@ func (eh *eventsHandler) tryCheckProcessedWithRetry(id, blockHash string) bool {
 		}
 	}
 
-	log.Debug("locker", "event", id, "block hash", blockHash, "succeeded", setSuccessful)
+	// log.Debug("locker", "event", id, "block hash", blockHash, "succeeded", setSuccessful)
 
 	return setSuccessful
 }
