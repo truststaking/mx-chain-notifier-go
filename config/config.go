@@ -126,14 +126,14 @@ type AzureKeyVaultConfig struct {
 	KeyVaultApiUsername string
 	KeyVaultApiPassword string
 	KeyVaultRabbitMQ    string
-	KeyVaultRedis       string
+	KeyVaultRedisUrl    string
 	KeyVaultUrl         string
 	Enabled             bool
 }
 
 // ServiceBusExchangeConfig holds the configuration for a servicebus exchange
 type ServiceBusExchangeConfig struct {
-	Topic    string
+	Topic   string
 	Enabled bool
 }
 
@@ -155,7 +155,7 @@ func LoadMainConfig(filePath string) (*MainConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	cfg.General.CheckDuplicates = true
 	if cfg.AzureKeyVault.Enabled {
 		credentials, err := azidentity.NewDefaultAzureCredential(nil)
 		if err != nil {
@@ -168,15 +168,15 @@ func LoadMainConfig(filePath string) (*MainConfig, error) {
 		}
 
 		if cfg.AzureKeyVault.KeyVaultRabbitMQ != "" {
-			rabbitURL, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultRabbitMQ, "", nil)
+			rabbitURL, err := client.GetSecret(context.Background(), cfg.AzureKeyVault.KeyVaultRabbitMQ, "", nil)
 			if err != nil {
 				return nil, err
 			}
 			cfg.RabbitMQ.Url = *rabbitURL.Value
 		}
 
-		if cfg.AzureKeyVault.KeyVaultRedis != "" {
-			redisURL, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultRedis, "", nil)
+		if cfg.AzureKeyVault.KeyVaultRedisUrl != "" {
+			redisURL, err := client.GetSecret(context.Background(), cfg.AzureKeyVault.KeyVaultRedisUrl, "", nil)
 			if err != nil {
 				return nil, err
 			}
@@ -184,7 +184,7 @@ func LoadMainConfig(filePath string) (*MainConfig, error) {
 		}
 
 		if cfg.AzureKeyVault.KeyVaultApiUsername != "" {
-			apiUsername, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultApiUsername, "", nil)
+			apiUsername, err := client.GetSecret(context.Background(), cfg.AzureKeyVault.KeyVaultApiUsername, "", nil)
 			if err != nil {
 				return nil, err
 			}
@@ -192,7 +192,7 @@ func LoadMainConfig(filePath string) (*MainConfig, error) {
 		}
 
 		if cfg.AzureKeyVault.KeyVaultApiPassword != "" {
-			apiPassword, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultApiPassword, "", nil)
+			apiPassword, err := client.GetSecret(context.Background(), cfg.AzureKeyVault.KeyVaultApiPassword, "", nil)
 			if err != nil {
 				return nil, err
 			}
@@ -200,7 +200,7 @@ func LoadMainConfig(filePath string) (*MainConfig, error) {
 		}
 
 		if cfg.AzureKeyVault.KeyVaultServiceBus != "" {
-			serviceBusUrl, err := client.GetSecret(context.TODO(), cfg.AzureKeyVault.KeyVaultServiceBus, "", nil)
+			serviceBusUrl, err := client.GetSecret(context.Background(), cfg.AzureKeyVault.KeyVaultServiceBus, "", nil)
 			if err != nil {
 				return nil, err
 			}

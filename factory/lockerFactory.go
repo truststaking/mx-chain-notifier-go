@@ -10,11 +10,9 @@ import (
 // CreateLockService creates lock service component based on config
 func CreateLockService(checkDuplicates bool, config config.RedisConfig) (redis.LockService, error) {
 	if !checkDuplicates {
-		log.Debug("check duplicates is disabled")
 		return disabled.NewDisabledRedlockWrapper(), nil
 	}
-	log.Info("check duplicates is enabled")
-	log.Info("creating redis client", "config", config)
+
 	redisClient, err := createRedisClient(config)
 	if err != nil {
 		return nil, err
