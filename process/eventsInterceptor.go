@@ -93,13 +93,10 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		for _, event := range logData.Log.Events {
 			eventIdentifier := string(event.Identifier)
 			originalTxHash := logData.TxHash
+			scResult, exists := scrs[logData.TxHash]
 			if eventIdentifier == core.SignalErrorOperation || eventIdentifier == core.InternalVMErrorsOperation {
-				scResult, exists := scrs[logData.TxHash]
-
 				if !exists {
 					skipTransfers = true
-				} else {
-					originalTxHash = string(scResult.OriginalTxHash)
 				}
 				log.Debug("eventsInterceptor: received signalError or internalVMErrors event from log event",
 					"txHash", logData.TxHash,
@@ -108,6 +105,9 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 					"originalTxHash", originalTxHash,
 					"txHash", logData.TxHash,
 				)
+			}
+			if exists {
+				originalTxHash = string(scResult.OriginalTxHash)
 			}
 			le := &logEvent{
 				EventHandler:   event,
