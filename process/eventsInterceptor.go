@@ -96,27 +96,15 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		if check.IfNilReflect(logData.Log) {
 			continue
 		}
-		// var tmpLogEvents []*logEvent
-		// skipTransfers := false
 		for _, event := range logData.Log.Events {
 			eventIdentifier := string(event.Identifier)
 			originalTxHash := logData.TxHash
 			scResult, exists := scrs[logData.TxHash]
-			// if eventIdentifier == core.SignalErrorOperation || eventIdentifier == core.InternalVMErrorsOperation {
-			// 	if !exists {
-			// 		skipTransfers = true
-			// 	}
-			// 	log.Debug("eventsInterceptor: received signalError or internalVMErrors event from log event",
-			// 		"txHash", logData.TxHash,
-			// 		"isSCResult", exists,
-			// 		"skipTransfers", skipTransfers,
-			// 		"originalTxHash", originalTxHash,
-			// 		"txHash", logData.TxHash,
-			// 	)
-			// }
+
 			if exists {
 				originalTxHash = string(scResult.OriginalTxHash)
 			}
+
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
 				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, event)
 				if err != nil {
@@ -127,7 +115,6 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 					log.Debug("eventsInterceptor: skip cross shard confirmation event", "txHash", logData.TxHash, "originalTxHash", originalTxHash, "eventIdentifier", eventIdentifier)
 					continue
 				}
-
 			}
 			le := &logEvent{
 				EventHandler:   event,
@@ -138,19 +125,6 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			logEvents = append(logEvents, le)
 
 		}
-		// if skipTransfers {
-		// 	var filteredItems []*logEvent
-		// 	for _, item := range tmpLogEvents {
-		// 		identifier := string(item.EventHandler.GetIdentifier())
-		// 		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
-		// 			continue
-		// 		}
-		// 		filteredItems = append(filteredItems, item)
-		// 	}
-		// 	logEvents = append(logEvents, filteredItems...)
-		// } else {
-		// 	logEvents = append(logEvents, tmpLogEvents...)
-		// }
 	}
 
 	if len(logEvents) == 0 {
