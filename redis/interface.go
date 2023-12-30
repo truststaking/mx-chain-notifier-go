@@ -20,7 +20,7 @@ type LockService interface {
 type RedLockClient interface {
 	SetEntry(ctx context.Context, key string, value bool, ttl time.Duration) (bool, error)
 	AddEventToList(ctx context.Context, key string, value *transaction.Event, ttl time.Duration) (int64, error)
-	GetEventList(ctx context.Context, key string) ([]string, error)
+	HasEvent(ctx context.Context, key string, value string) (bool, error)
 	Ping(ctx context.Context) (string, error)
 	IsConnected(ctx context.Context) bool
 	IsInterfaceNil() bool

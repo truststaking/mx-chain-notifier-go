@@ -38,7 +38,6 @@ func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, va
 	}
 
 	index, err := rc.redis.SAdd(ctx, key, string(jsonData)).Result()
-	log.Info("index event", "index", index)
 	if err != nil {
 		return 0, err
 	}
@@ -52,8 +51,8 @@ func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, va
 }
 
 // GetEventList will try to get the list of events from redis database
-func (rc *redisClientWrapper) GetEventList(ctx context.Context, key string) ([]string, error) {
-	return rc.redis.SMembers(ctx, key).Result()
+func (rc *redisClientWrapper) HasEvent(ctx context.Context, key string, value string) (bool, error) {
+	return rc.redis.SIsMember(ctx, key, value).Result()
 }
 
 // Ping will check if Redis instance is reponding

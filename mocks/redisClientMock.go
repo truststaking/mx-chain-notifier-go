@@ -50,10 +50,10 @@ func (rc *RedisClientMock) AddEventToList(ctx context.Context, key string, value
 }
 
 // GetEventList will try to get the list of events from redis database
-func (rc *RedisClientMock) GetEventList(ctx context.Context, key string) ([]string, error) {
+func (rc *RedisClientMock) HasEvent(ctx context.Context, key string, value string) (bool, error) {
 	rc.mut.Lock()
 	defer rc.mut.Unlock()
-	return make([]string, 0), nil
+	return true, nil
 }
 
 // GetEntries -

@@ -43,35 +43,26 @@ func (r *redlockWrapper) IsEventProcessed(ctx context.Context, blockHash string)
 }
 
 func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event *transaction.Event) (bool, error) {
-	eventsList, err := r.client.GetEventList(ctx, originalTxHash)
-	log.Info("eventsList", "eventsList", eventsList)
+	jsonData, err := json.Marshal(event)
 	if err != nil {
 		return false, err
 	}
-	if len(eventsList) == 0 {
-		_, err = r.client.AddEventToList(ctx, originalTxHash, event, time.Minute)
-		if err != nil {
-			return false, err
-		}
-		log.Info("added first entry", "event", event)
-		return false, nil
-	} else {
-		isConfirmation := false
-		for _, eventJSON := range eventsList {
-			log.Info("eventJSON", "eventJSON", eventJSON)
-			var savedEvent *transaction.Event
-			err = json.Unmarshal([]byte(eventJSON), &savedEvent)
-			if err != nil {
-				return false, err
-			}
-			if event.Equal(savedEvent) {
-				log.Info("event equal", "event", event)
-				isConfirmation = true
-				break
-			}
-		}
-		return isConfirmation, nil
+	eventExists, err := r.client.HasEvent(ctx, originalTxHash, string(jsonData))
+	if err != nil {
+		return false, err
 	}
+	if eventExists {
+		log.Info("event already exists", "event", jsonData)
+		return true, nil
+	}
+
+	_, err = r.client.AddEventToList(ctx, originalTxHash, event, time.Minute)
+	if err != nil {
+		return false, err
+	}
+	log.Info("added first entry", "event", jsonData)
+	return false, nil
+
 }
 
 // HasConnection returns true if the redis client is connected

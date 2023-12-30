@@ -29,9 +29,9 @@ func (rc *RedisClientStub) AddEventToList(ctx context.Context, key string, value
 }
 
 // GetEventList will try to get the list of events from redis database
-func (rc *RedisClientStub) GetEventList(ctx context.Context, key string) ([]string, error) {
+func (rc *RedisClientStub) HasEvent(ctx context.Context, key string, value string) (bool, error) {
 
-	return make([]string, 0), nil
+	return true, nil
 }
 
 // Ping -
