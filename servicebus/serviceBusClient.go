@@ -63,7 +63,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		return err
 	}
 
-	currentMessageBatch, err := sender.NewMessageBatch(context.TODO(), nil)
+	currentMessageBatch, err := sender.NewMessageBatch(context.Background(), nil)
 	if err != nil {
 		log.Error("error creating message batch for service bus:", err)
 		return err
@@ -100,6 +100,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 
 		msg.ApplicationProperties["Address"] = events.Events[i].Address
 		msg.ApplicationProperties["Identifier"] = events.Events[i].Identifier
+		msg.ApplicationProperties["OriginalTxHash"] = events.Events[i].OriginalTxHash
 
 		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer {
 			msg.ApplicationProperties["isNFT"] = isNFT
@@ -112,19 +113,18 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 				return err
 			}
 
-			log.Info("Message batch is full. Sending it and creating a new one.")
+			log.Info("Message batch is full. Sending it and creating a new one.", "count", currentMessageBatch.NumMessages())
 
 			// send what we have since the batch is full
-			err := sender.SendMessageBatch(context.TODO(), currentMessageBatch, nil)
+			err := sender.SendMessageBatch(context.Background(), currentMessageBatch, nil)
 
 			if err != nil {
-				// TODO: handle loop retry
 				log.Error("Error sending the batch of messages", err)
 				return err
 			}
 
 			// Create a new batch and retry adding this message to our batch.
-			newBatch, err := sender.NewMessageBatch(context.TODO(), nil)
+			newBatch, err := sender.NewMessageBatch(context.Background(), nil)
 
 			if err != nil {
 				log.Error("Error creating a new batch of messages", err)
@@ -144,14 +144,16 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 
 	// check if any messages are remaining to be sent.
 	if currentMessageBatch.NumMessages() > 0 {
-		err := sender.SendMessageBatch(context.TODO(), currentMessageBatch, nil)
+		err := sender.SendMessageBatch(context.Background(), currentMessageBatch, nil)
 		if err != nil {
 			log.Error("Error send remaining messages in batch", err.Error())
 			return err
+		} else {
+			log.Info("Sent remaining messages in batch", "count", currentMessageBatch.NumMessages())
 		}
 	}
 
-	sender.Close(context.TODO())
+	sender.Close(context.Background())
 	return nil
 }
 
@@ -181,7 +183,7 @@ func (sb *serviceBusClient) Reconnect() {
 
 // Close will close rabbitMq client connection
 func (sb *serviceBusClient) Close() {
-	err := sb.client.Close(context.TODO())
+	err := sb.client.Close(context.Background())
 	if err != nil {
 		log.Error("failed to close servicebus client", "err", err.Error())
 	}

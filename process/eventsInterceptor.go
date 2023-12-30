@@ -116,7 +116,7 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 					continue
 				}
 				if skipEvent {
-					log.Debug("eventsInterceptor: skip cross shard confirmation event", "txHash", logData.TxHash, "originalTxHash", originalTxHash, "eventIdentifier", eventIdentifier)
+					log.Info("eventsInterceptor: skip cross shard confirmation event", "txHash", logData.TxHash, "originalTxHash", originalTxHash, "eventIdentifier", eventIdentifier)
 					continue
 				}
 			}
@@ -146,22 +146,43 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			continue
 		}
 		eventIdentifier := string(event.EventHandler.GetIdentifier())
+		topics := event.EventHandler.GetTopics()
 
-		// log.Debug("eventsInterceptor: received event from address",
-		// 	"address", bech32Address,
-		// 	"identifier", eventIdentifier,
-		// 	"txHash", event.TxHash,
-		// 	"originalTxHash", event.OriginalTxHash,
-		// )
+		if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer && len(topics) > 4 {
+			topicsLen := len(topics)
+			iterations := (topicsLen - 1) / 3
+			receiver := topics[topicsLen-1]
 
-		events = append(events, data.Event{
-			Address:        bech32Address,
-			Identifier:     eventIdentifier,
-			Topics:         event.EventHandler.GetTopics(),
-			Data:           event.EventHandler.GetData(),
-			TxHash:         event.TxHash,
-			OriginalTxHash: event.OriginalTxHash,
-		})
+			for i := 0; i < iterations; i++ {
+				newTopics := make([][]byte, 0, 4)
+				// identifier
+				newTopics = append(newTopics, topics[i*3])
+				// nonce
+				newTopics = append(newTopics, topics[1+i*3])
+				// amount
+				newTopics = append(newTopics, topics[2+i*3])
+				// receiver
+				newTopics = append(newTopics, receiver)
+				log.Info("eventsInterceptor: multi esdt nft transfer", "txHash", event.TxHash, "originalTxHash", event.OriginalTxHash, "eventIdentifier", eventIdentifier, "topics", newTopics)
+				events = append(events, data.Event{
+					Address:        bech32Address,
+					Identifier:     eventIdentifier,
+					Topics:         newTopics,
+					Data:           event.EventHandler.GetData(),
+					TxHash:         event.TxHash,
+					OriginalTxHash: event.OriginalTxHash,
+				})
+			}
+		} else {
+			events = append(events, data.Event{
+				Address:        bech32Address,
+				Identifier:     eventIdentifier,
+				Topics:         event.EventHandler.GetTopics(),
+				Data:           event.EventHandler.GetData(),
+				TxHash:         event.TxHash,
+				OriginalTxHash: event.OriginalTxHash,
+			})
+		}
 	}
 
 	return events
