@@ -127,7 +127,6 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			}
 
 			logEvents = append(logEvents, le)
-
 		}
 	}
 

@@ -45,11 +45,13 @@ func (r *redlockWrapper) IsEventProcessed(ctx context.Context, blockHash string)
 func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalTxHash string, event data.EventDuplicateCheck) (bool, error) {
 	jsonData, err := json.Marshal(event)
 	if err != nil {
+		log.Error("could not marshal event", "err", err.Error())
 		return false, err
 	}
-
+	log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", jsonData)
 	eventExists, err := r.client.HasEvent(ctx, originalTxHash, jsonData)
 	if err != nil {
+		log.Error("could not check if event exists", "err", err.Error())
 		return false, err
 	}
 	if eventExists {
@@ -58,8 +60,10 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 
 	_, err = r.client.AddEventToList(ctx, originalTxHash, jsonData, time.Minute)
 	if err != nil {
+		log.Error("could not add event to list", "err", err.Error())
 		return false, err
 	}
+	log.Info("event added to list", "txHash", originalTxHash, "event", jsonData)
 	return false, nil
 }
 
