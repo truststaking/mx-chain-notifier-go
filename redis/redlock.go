@@ -48,24 +48,29 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 		log.Error("could not marshal event", "err", err.Error())
 		return false, err
 	}
-	log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", jsonData)
-	eventExists, err := r.client.HasEvent(ctx, originalTxHash, jsonData)
-	log.Info("event exists status in redis", "txHash", originalTxHash, "event", jsonData, "exists", eventExists)
+	log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", jsonData, "key", (originalTxHash + string(jsonData)))
+	eventExists, err := r.client.SetEntry(ctx, originalTxHash+string(jsonData), true, time.Minute*5)
 	if err != nil {
 		log.Error("could not check if event exists", "err", err.Error())
 		return false, err
 	}
-	if eventExists {
-		return true, nil
-	}
+	return eventExists, nil
+	// log.Info("event exists status in redis", "txHash", originalTxHash, "event", jsonData, "exists", eventExists)
+	// if err != nil {
+	// 	log.Error("could not check if event exists", "err", err.Error())
+	// 	return false, err
+	// }
+	// if eventExists {
+	// 	return true, nil
+	// }
 
-	_, err = r.client.AddEventToList(ctx, originalTxHash, jsonData, time.Minute*5)
-	if err != nil {
-		log.Error("could not add event to list", "err", err.Error())
-		return false, err
-	}
-	log.Info("event added to list", "txHash", originalTxHash, "event", jsonData)
-	return false, nil
+	// _, err = r.client.AddEventToList(ctx, originalTxHash, jsonData, time.Minute*5)
+	// if err != nil {
+	// 	log.Error("could not add event to list", "err", err.Error())
+	// 	return false, err
+	// }
+	// log.Info("event added to list", "txHash", originalTxHash, "event", jsonData)
+	// return false, nil
 }
 
 // HasConnection returns true if the redis client is connected
