@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -48,8 +49,9 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 		log.Error("could not marshal event", "err", err.Error())
 		return false, err
 	}
-	log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", jsonData, "key", (originalTxHash + string(jsonData)))
-	eventExists, err := r.client.SetEntry(ctx, originalTxHash+string(jsonData), true, time.Minute*5)
+	hexData := hex.EncodeToString(jsonData)
+	log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", hexData, "key", (originalTxHash + hexData))
+	eventExists, err := r.client.SetEntry(ctx, originalTxHash + hexData, true, time.Minute*5)
 	if err != nil {
 		log.Error("could not check if event exists", "err", err.Error())
 		return false, err

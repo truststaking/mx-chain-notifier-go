@@ -102,7 +102,7 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			scResult, exists := scrs[logData.TxHash]
 
 			if exists {
-				originalTxHash = string(scResult.GetOriginalTxHash())
+				originalTxHash = hex.EncodeToString(scResult.GetOriginalTxHash())
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
@@ -162,7 +162,7 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 				newTopics = append(newTopics, topics[2+i*3])
 				// receiver
 				newTopics = append(newTopics, receiver)
-				log.Info("eventsInterceptor: multi esdt nft transfer", "txHash", event.TxHash, "originalTxHash", event.OriginalTxHash, "eventIdentifier", eventIdentifier, "topics", newTopics)
+
 				events = append(events, data.Event{
 					Address:        bech32Address,
 					Identifier:     eventIdentifier,
