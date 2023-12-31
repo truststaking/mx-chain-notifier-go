@@ -50,8 +50,8 @@ func (r *redlockWrapper) IsCrossShardConfirmation(ctx context.Context, originalT
 		return false, err
 	}
 	hexData := hex.EncodeToString(jsonData)
-	log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", hexData, "key", (originalTxHash + hexData))
-	eventExists, err := r.client.SetEntry(ctx, originalTxHash + hexData, true, time.Minute*5)
+	// log.Info("checking if event exists in redis", "txHash", originalTxHash, "event", hexData, "key", (originalTxHash + hexData))
+	eventExists, err := r.client.SetEntry(ctx, originalTxHash+hexData, true, time.Minute*5)
 	if err != nil {
 		log.Error("could not check if event exists", "err", err.Error())
 		return false, err

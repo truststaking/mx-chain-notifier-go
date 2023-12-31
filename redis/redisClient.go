@@ -41,7 +41,6 @@ func (rc *redisClientWrapper) AddEventToList(ctx context.Context, key string, va
 		log.Error("could not set expiration for key", "key", key, "err", err.Error())
 		return 0, err
 	}
-	log.Info("event added to list", "key", key, "value", value, "index", index)
 	return index, nil
 }
 
