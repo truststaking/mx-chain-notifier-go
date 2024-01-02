@@ -1,7 +1,6 @@
 package servicebus
 
 import (
-	"bytes"
 	"context"
 	"encoding/hex"
 	"encoding/json"
@@ -74,6 +73,14 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		sessionId := events.Events[i].Address
 		isNFT := "true"
 
+		if cfg.SkipExecutionEventLogs {
+			if identifier == core.WriteLogIdentifier ||
+				identifier == core.SignalErrorOperation ||
+				identifier == core.InternalVMErrorsOperation ||
+				identifier == core.CompletedTxEventIdentifier {
+				continue
+			}
+		}
 		if identifier == core.BuiltInFunctionESDTNFTCreate ||
 			identifier == core.BuiltInFunctionESDTNFTBurn ||
 			identifier == core.BuiltInFunctionESDTNFTUpdateAttributes ||
@@ -192,35 +199,4 @@ func (sb *serviceBusClient) Close() {
 // IsInterfaceNil returns true if there is no value under the interface
 func (sb *serviceBusClient) IsInterfaceNil() bool {
 	return sb == nil
-}
-
-const METACHAIN_SHARD_ID = 4294967295
-
-func isAddressOfMetachain(pubKey []byte) bool {
-	metachainPrefix := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	pubKeyPrefix := pubKey[:len(metachainPrefix)]
-	if bytes.Equal(pubKeyPrefix, metachainPrefix) {
-		return true
-	}
-	zeroAddress := make([]byte, 32)
-	return bytes.Equal(pubKey, zeroAddress)
-}
-
-func getShardOfAddress(hexPubKey string) int {
-	numShards := 3
-	maskHigh := 0b11
-	maskLow := 0b01
-
-	pubKey, _ := hex.DecodeString(hexPubKey)
-	lastByteOfPubKey := pubKey[31]
-
-	if isAddressOfMetachain(pubKey) {
-		return METACHAIN_SHARD_ID
-	}
-
-	shard := int(lastByteOfPubKey) & maskHigh
-	if shard > numShards-1 {
-		shard = int(lastByteOfPubKey) & maskLow
-	}
-	return shard
 }

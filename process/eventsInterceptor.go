@@ -120,6 +120,7 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 					continue
 				}
 			}
+
 			le := &logEvent{
 				EventHandler:   event,
 				TxHash:         logData.TxHash,

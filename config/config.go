@@ -139,6 +139,7 @@ type ServiceBusExchangeConfig struct {
 
 type AzureServiceBusConfig struct {
 	ServiceBusConnectionString string
+	SkipExecutionEventLogs     bool
 	ServiceBusTopic            string
 	EventsExchange             ServiceBusExchangeConfig
 	RevertEventsExchange       ServiceBusExchangeConfig

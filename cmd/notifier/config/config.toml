@@ -115,7 +115,10 @@
     # ServiceBusConnectionString is the connection string for the ServiceBus instance
     ServiceBusConnectionString = ''
 
-        # The exchange which holds all logs and events
+    # Skip execution event logs https://docs.multiversx.com/developers/event-logs/execution-events/
+    SkipExecutionEventLogs = true
+
+    # The exchange which holds all logs and events
     [AzureServiceBus.EventsExchange]
         Topic = "all_events"
         Enabled = false
