@@ -153,7 +153,7 @@
     Enabled = true
 
     # KeyVault is the name of the Azure KeyVault that holds the secrets
-    KeyVaultUrl = "https://trustmarketdevnetvault.vault.azure.net/"
+    KeyVaultUrl = "https://trustmarketvault.vault.azure.net/"
 
     # KeyVaultApiUsername is the name of the secret in the KeyVault that holds the username for the ConnectorApi
     KeyVaultApiUsername = 'SquadNotifierUsername'

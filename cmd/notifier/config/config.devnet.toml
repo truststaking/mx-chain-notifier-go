@@ -119,12 +119,12 @@
 
     # The exchange which holds all logs and events
     [AzureServiceBus.EventsExchange]
-        Topic = "all_events"
+        Topic = "all_events_dev"
         Enabled = false
 
     # The exchange which holds revert events
     [AzureServiceBus.RevertEventsExchange]
-        Topic = "revert_events"
+        Topic = "revert_events_dev"
         Enabled = false
 
     # The exchange which holds finalized block events
@@ -134,12 +134,12 @@
 
     # The exchange which holds block txs events
     [AzureServiceBus.BlockTxsExchange]
-        Topic = "block_txs"
+        Topic = "block_txs_dev"
         Enabled = false
 
     # The exchange which holds block scrs events
     [AzureServiceBus.BlockScrsExchange]
-        Topic = "block_scrs"
+        Topic = "block_scrs_dev"
         Enabled = false
 
     # The exchange which holds block events with additional info
