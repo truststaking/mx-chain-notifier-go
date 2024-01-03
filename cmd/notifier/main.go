@@ -100,7 +100,6 @@ func main() {
 		generalConfigFile,
 		apiConfigFile,
 		workingDirectory,
-		apiType,
 		publisherType,
 	}
 	app.Authors = []cli.Author{
