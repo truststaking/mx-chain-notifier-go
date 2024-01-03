@@ -7,7 +7,7 @@ on:
     branches: 
       [ xoxno ]
     paths:
-    - '//**'
+    - '**'
     - '.github/workflows/notifier-AutoDeployTrigger-6b46982e-9770-4a19-98f0-957610303b86.yml'
 
   # Allow manual trigger 
