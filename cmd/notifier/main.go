@@ -70,18 +70,10 @@ VERSION:
 		Value: "",
 	}
 
-	// deprecated - keep it for backwards compatibility
-	// TODO: remove flag
-	apiType = cli.StringFlag{
-		Name:  "api-type",
-		Usage: "Deprecated: This flag specifies the api type, it defines the way in which it will expose the events. Options: rabbit-api | notifier",
-		Value: "rabbit-api",
-	}
-
 	publisherType = cli.StringFlag{
 		Name:  "publisher-type",
 		Usage: "This flag specifies the publisher type, it defines the way in which it will expose the events. Options: " + common.MessageQueuePublisherType + " | " + common.WSPublisherType + " | " + common.ServiceBusQueuePublisherType,
-		Value: common.MessageQueuePublisherType,
+		Value: common.ServiceBusQueuePublisherType,
 	}
 )
 
@@ -198,30 +190,9 @@ func getFlagsConfig(ctx *cli.Context) (*config.FlagsConfig, error) {
 	flagsConfig.SaveLogFile = ctx.GlobalBool(logSaveFile.Name)
 	flagsConfig.GeneralConfigPath = ctx.GlobalString(generalConfigFile.Name)
 	flagsConfig.APIConfigPath = ctx.GlobalString(apiConfigFile.Name)
-
-	flagsConfig.PublisherType, err = handleAPIType(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	if ctx.IsSet(publisherType.Name) {
-		flagsConfig.PublisherType = ctx.GlobalString(publisherType.Name)
-	}
+	flagsConfig.PublisherType = ctx.GlobalString(publisherType.Name)
 
 	return flagsConfig, nil
-}
-
-// TODO: remove deprecated flag
-func handleAPIType(ctx *cli.Context) (string, error) {
-	apiType := ctx.GlobalString(apiType.Name)
-	switch apiType {
-	case "rabbit-api":
-		return common.MessageQueuePublisherType, nil
-	case "notifier":
-		return common.WSPublisherType, nil
-	default:
-		return "", common.ErrInvalidAPIType
-	}
 }
 
 func initLogger(config *config.FlagsConfig) (logging.FileLogger, error) {
