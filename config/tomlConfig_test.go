@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/multiversx/mx-chain-notifier-go/config"
 	"github.com/pelletier/go-toml"
 	"github.com/stretchr/testify/require"
+	"github.com/truststaking/mx-chain-notifier-go/config"
 )
 
 func TestMainConfig(t *testing.T) {
