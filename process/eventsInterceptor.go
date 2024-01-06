@@ -99,20 +99,21 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		for _, event := range logData.Log.Events {
 			eventIdentifier := string(event.Identifier)
 			originalTxHash := logData.GetTxHash()
-			scResult, exists := scrs[logData.TxHash]
+			scResult, exists := scrs[originalTxHash]
 
 			if exists {
 				originalTxHash = hex.EncodeToString(scResult.GetOriginalTxHash())
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
+				log.Debug("Data", "event - data", hex.EncodeToString(event.GetData()))
 				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, data.EventDuplicateCheck{
 					Address:    event.Address,
 					Identifier: event.Identifier,
 					Topics:     event.Topics,
 				})
 				if err != nil {
-					log.Error("eventsInterceptor: failed to check cross shard confirmation", "error", err)
+					log.Info("eventsInterceptor: failed to check cross shard confirmation", "error", err)
 					continue
 				}
 				if skipEvent {
