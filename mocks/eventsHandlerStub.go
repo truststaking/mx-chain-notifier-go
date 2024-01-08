@@ -4,12 +4,18 @@ import "github.com/truststaking/mx-chain-notifier-go/data"
 
 // EventsHandlerStub implements EventsHandler interface
 type EventsHandlerStub struct {
+	SkipRecivedDuplicatedEventsCalled func(id, value string)
 	HandlePushEventsCalled           func(events data.BlockEvents) error
 	HandleRevertEventsCalled         func(revertBlock data.RevertBlock)
 	HandleFinalizedEventsCalled      func(finalizedBlock data.FinalizedBlock)
 	HandleBlockTxsCalled             func(blockTxs data.BlockTxs)
 	HandleBlockScrsCalled            func(blockScrs data.BlockScrs)
 	HandleBlockEventsWithOrderCalled func(blockTxs data.BlockEventsWithOrder)
+}
+
+// SkipRecivedDuplicatedEvents -
+func (e *EventsHandlerStub) SkipRecivedDuplicatedEvents(id, value string) bool {
+	return true
 }
 
 // HandlePushEvents -

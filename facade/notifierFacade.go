@@ -1,17 +1,15 @@
 package facade
 
 import (
+	"encoding/hex"
 	"net/http"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	logger "github.com/multiversx/mx-chain-logger-go"
 	"github.com/truststaking/mx-chain-notifier-go/common"
 	"github.com/truststaking/mx-chain-notifier-go/config"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
-
-var log = logger.GetOrCreate("facade")
 
 // ArgsNotifierFacade defines the arguments necessary for notifierFacade creation
 type ArgsNotifierFacade struct {
@@ -63,9 +61,14 @@ func checkArgs(args ArgsNotifierFacade) error {
 	return nil
 }
 
-// HandlePushEventsV2 will handle push events received from observer
+// HandlePushEvents will handle push events received from observer
 // It splits block data and handles log, txs and srcs events separately
-func (nf *notifierFacade) HandlePushEventsV2(allEvents data.ArgsSaveBlockData) error {
+func (nf *notifierFacade) HandlePushEvents(allEvents data.ArgsSaveBlockData) error {
+	skip := nf.eventsHandler.SkipRecivedDuplicatedEvents(common.PushLogsAndEvents, hex.EncodeToString(allEvents.HeaderHash))
+	if skip {
+		return nil
+	}
+
 	eventsData, err := nf.eventsInterceptor.ProcessBlockEvents(&allEvents)
 	if err != nil {
 		return err
@@ -107,6 +110,9 @@ func (nf *notifierFacade) HandlePushEventsV2(allEvents data.ArgsSaveBlockData) e
 	return nil
 }
 
+func (nf *notifierFacade) SkipRecivedDuplicatedEvents(id, value string) bool {
+	return nf.eventsHandler.SkipRecivedDuplicatedEvents(id, value)
+}
 // HandleRevertEvents will handle revents events received from observer
 func (nf *notifierFacade) HandleRevertEvents(events data.RevertBlock) {
 	nf.eventsHandler.HandleRevertEvents(events)

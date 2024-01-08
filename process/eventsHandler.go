@@ -80,36 +80,41 @@ func (eh *eventsHandler) HandlePushEvents(events data.BlockEvents) error {
 		return common.ErrReceivedEmptyEvents
 	}
 
-	shouldProcessEvents := true
-	if eh.checkDuplicates {
-		shouldProcessEvents = eh.tryCheckProcessedWithRetry(common.PushLogsAndEvents, events.Hash)
-	}
-
-	if !shouldProcessEvents {
-		log.Info("received duplicated events", "event", common.PushLogsAndEvents,
-			"block hash", events.Hash,
-			"will process", false,
-		)
-		return nil
-	}
-
 	if len(events.Events) == 0 {
 		// log.Warn("received empty events", "event", common.PushLogsAndEvents,
 		// 	"block hash", events.Hash,
 		// 	"will process", shouldProcessEvents,
 		// )
 		events.Events = make([]data.Event, 0)
-	} else {
+	} 
+	// else {
 		// log.Info("received", "event", common.PushLogsAndEvents,
-			// "block hash", events.Hash,
+		// "block hash", events.Hash,
 		// 	"will process", shouldProcessEvents,
 		// )
-	}
+	// }
 
 	t := time.Now()
 	eh.publisher.Broadcast(events)
 	eh.metricsHandler.AddRequest(getRabbitOpID(common.PushLogsAndEvents), time.Since(t))
 	return nil
+}
+
+func (eh *eventsHandler) SkipRecivedDuplicatedEvents(id string, value string) bool {
+
+	shouldProcessRevert := true
+	if eh.checkDuplicates {
+		shouldProcessRevert = eh.tryCheckProcessedWithRetry(id, value)
+	}
+
+	if !shouldProcessRevert {
+		log.Info("received duplicated events", "event", id,
+			"block hash", value,
+			"will process", false,
+		)
+		return true
+	}
+	return false
 }
 
 // HandleRevertEvents will handle revents events received from observer
@@ -118,19 +123,6 @@ func (eh *eventsHandler) HandleRevertEvents(revertBlock data.RevertBlock) {
 		log.Warn("received empty hash", "event", common.RevertBlockEvents,
 			"will process", false,
 		)
-		return
-	}
-
-	shouldProcessRevert := true
-	if eh.checkDuplicates {
-		shouldProcessRevert = eh.tryCheckProcessedWithRetry(common.RevertBlockEvents, revertBlock.Hash)
-	}
-
-	if !shouldProcessRevert {
-		// log.Info("received duplicated events", "event", common.RevertBlockEvents,
-		// 	"block hash", revertBlock.Hash,
-		// 	"will process", false,
-		// )
 		return
 	}
 
@@ -152,19 +144,11 @@ func (eh *eventsHandler) HandleFinalizedEvents(finalizedBlock data.FinalizedBloc
 		)
 		return
 	}
-	shouldProcessFinalized := true
-	if eh.checkDuplicates {
-		shouldProcessFinalized = eh.tryCheckProcessedWithRetry(common.FinalizedBlockEvents, finalizedBlock.Hash)
-	}
 
-	if !shouldProcessFinalized {
-		// log.Info("received duplicated events", "event", common.FinalizedBlockEvents,
-		// 	"block hash", finalizedBlock.Hash,
-		// 	"will process", false,
-		// )
+	skip := eh.SkipRecivedDuplicatedEvents(common.FinalizedBlockEvents, finalizedBlock.Hash)
+	if skip {
 		return
 	}
-
 	// log.Info("received", "event", common.FinalizedBlockEvents,
 	// 	"block hash", finalizedBlock.Hash,
 	// 	"will process", shouldProcessFinalized,
@@ -183,30 +167,22 @@ func (eh *eventsHandler) HandleBlockTxs(blockTxs data.BlockTxs) {
 		)
 		return
 	}
-	shouldProcessTxs := true
-	if eh.checkDuplicates {
-		shouldProcessTxs = eh.tryCheckProcessedWithRetry(common.BlockTxs, blockTxs.Hash)
-	}
 
-	if !shouldProcessTxs {
-		log.Info("received duplicated events", "event", common.BlockTxs,
-			"block hash", blockTxs.Hash,
-			"will process", false,
-		)
+	skip := eh.SkipRecivedDuplicatedEvents(common.BlockTxs, blockTxs.Hash)
+	if skip {
 		return
 	}
-
-	if len(blockTxs.Txs) == 0 {
+	// if len(blockTxs.Txs) == 0 {
 		// log.Warn("received empty events", "event", common.BlockTxs,
 		// 	"block hash", blockTxs.Hash,
 		// 	"will process", shouldProcessTxs,
 		// )
-	} else {
+	// } else {
 		// log.Info("received", "event", common.BlockTxs,
 		// 	"block hash", blockTxs.Hash,
 		// 	"will process", shouldProcessTxs,
 		// )
-	}
+	// }
 
 	t := time.Now()
 	eh.publisher.BroadcastTxs(blockTxs)
@@ -221,30 +197,21 @@ func (eh *eventsHandler) HandleBlockScrs(blockScrs data.BlockScrs) {
 		)
 		return
 	}
-	shouldProcessScrs := true
-	if eh.checkDuplicates {
-		shouldProcessScrs = eh.tryCheckProcessedWithRetry(common.BlockScrs, blockScrs.Hash)
-	}
-
-	if !shouldProcessScrs {
-		log.Info("received duplicated events", "event", common.BlockScrs,
-			"block hash", blockScrs.Hash,
-			"will process", false,
-		)
+	skip := eh.SkipRecivedDuplicatedEvents(common.BlockScrs, blockScrs.Hash)
+	if skip {
 		return
 	}
-
-	if len(blockScrs.Scrs) == 0 {
+	// if len(blockScrs.Scrs) == 0 {
 		// log.Warn("received empty events", "event", common.BlockScrs,
 		// 	"block hash", blockScrs.Hash,
 		// 	"will process", shouldProcessScrs,
 		// )
-	} else {
+	// } else {
 		// log.Info("received", "event", common.BlockScrs,
 		// 	"block hash", blockScrs.Hash,
 		// 	"will process", shouldProcessScrs,
 		// )
-	}
+	// }
 
 	t := time.Now()
 	eh.publisher.BroadcastScrs(blockScrs)
@@ -259,19 +226,11 @@ func (eh *eventsHandler) HandleBlockEventsWithOrder(blockTxs data.BlockEventsWit
 		)
 		return
 	}
-	shouldProcessTxs := true
-	if eh.checkDuplicates {
-		shouldProcessTxs = eh.tryCheckProcessedWithRetry(common.BlockEvents, blockTxs.Hash)
-	}
 
-	if !shouldProcessTxs {
-		// log.Info("received duplicated events", "event", common.BlockEvents,
-		// 	"block hash", blockTxs.Hash,
-		// 	"will process", false,
-		// )
+	skip := eh.SkipRecivedDuplicatedEvents(common.BlockEvents, blockTxs.Hash)
+	if skip {
 		return
 	}
-
 	// log.Info("received", "event", common.BlockEvents,
 	// 	"block hash", blockTxs.Hash,
 	// 	"will process", shouldProcessTxs,
