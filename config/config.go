@@ -88,6 +88,7 @@ type RabbitMQConfig struct {
 	BlockTxsExchange        RabbitMQExchangeConfig
 	BlockScrsExchange       RabbitMQExchangeConfig
 	BlockEventsExchange     RabbitMQExchangeConfig
+	AlteredAccountsExchange RabbitMQExchangeConfig
 }
 
 // RabbitMQExchangeConfig holds the configuration for a rabbitMQ exchange
@@ -147,6 +148,7 @@ type AzureServiceBusConfig struct {
 	BlockTxsExchange           ServiceBusExchangeConfig
 	BlockScrsExchange          ServiceBusExchangeConfig
 	BlockEventsExchange        ServiceBusExchangeConfig
+	AlteredAccountsExchange    ServiceBusExchangeConfig
 }
 
 // LoadMainConfig returns a MainConfig instance by reading the provided toml file

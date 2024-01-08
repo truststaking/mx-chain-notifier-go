@@ -1,7 +1,6 @@
 package rabbitmq
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/streadway/amqp"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
@@ -22,7 +21,7 @@ type RabbitMqClient interface {
 // able to publish received events and broadcast them to channels
 type PublisherService interface {
 	Run()
-	BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount)
+	BroadcastAlteredAccounts(accounts data.AlteredAccountsEvent)
 	Broadcast(events data.BlockEvents)
 	BroadcastRevert(event data.RevertBlock)
 	BroadcastFinalized(event data.FinalizedBlock)

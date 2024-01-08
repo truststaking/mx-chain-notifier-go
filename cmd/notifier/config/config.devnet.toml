@@ -124,33 +124,33 @@
 
     # The exchange which holds all logs and events
     [AzureServiceBus.EventsExchange]
-        Topic = "all_events_dev"
-        Enabled = false
+        Topic = "mvx_events_raw_devnet"
+        Enabled = true
 
     # The exchange which holds revert events
     [AzureServiceBus.RevertEventsExchange]
-        Topic = "revert_events_dev"
+        Topic = "revert_events_devnet"
         Enabled = false
 
     # The exchange which holds finalized block events
     [AzureServiceBus.FinalizedEventsExchange]
-        Topic = "finalized_events_dev"
+        Topic = "finalized_events_devnet"
         Enabled = false
 
     # The exchange which holds block txs events
     [AzureServiceBus.BlockTxsExchange]
-        Topic = "block_txs_dev"
+        Topic = "block_txs_devnet"
         Enabled = false
 
     # The exchange which holds block scrs events
     [AzureServiceBus.BlockScrsExchange]
-        Topic = "block_scrs_dev"
+        Topic = "block_scrs_devnet"
         Enabled = false
 
     # The exchange which holds block events with additional info
     [AzureServiceBus.BlockEventsExchange]
-        Topic = "mvx_events_raw_devnet"
-        Enabled = true
+        Topic = "block_events_devnet"
+        Enabled = false
 
     # The exchange which holds block events with additional info
     [AzureServiceBus.AlteredAccountsExchange]

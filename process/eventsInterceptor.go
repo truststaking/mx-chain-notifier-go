@@ -6,6 +6,7 @@ import (
 
 	"github.com/multiversx/mx-chain-core-go/core"
 	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/data/smartContractResult"
 	"github.com/multiversx/mx-chain-core-go/data/transaction"
@@ -73,17 +74,25 @@ func (ei *eventsInterceptor) ProcessBlockEvents(eventsData *data.ArgsSaveBlockDa
 	for hash, tx := range eventsData.TransactionsPool.Transactions {
 		txs[hash] = tx.Transaction
 	}
+	accounts := make([]*alteredAccount.AlteredAccount, 0)
+	for _, account := range eventsData.AlteredAccounts {
+		accounts = append(accounts, account)
+	}
+
+	for hash, tx := range eventsData.TransactionsPool.Transactions {
+		txs[hash] = tx.Transaction
+	}
 	txsWithOrder := eventsData.TransactionsPool.Transactions
-	log.Info("altered accounts", "accounts", eventsData.AlteredAccounts)
 	return &data.InterceptorBlockData{
-		Hash:          hex.EncodeToString(eventsData.HeaderHash),
-		Body:          eventsData.Body,
-		Header:        eventsData.Header,
-		Txs:           txs,
-		TxsWithOrder:  txsWithOrder,
-		Scrs:          scrs,
-		ScrsWithOrder: scrsWithOrder,
-		LogEvents:     events,
+		Hash:            hex.EncodeToString(eventsData.HeaderHash),
+		Body:            eventsData.Body,
+		Header:          eventsData.Header,
+		Txs:             txs,
+		TxsWithOrder:    txsWithOrder,
+		Scrs:            scrs,
+		ScrsWithOrder:   scrsWithOrder,
+		LogEvents:       events,
+		AlteredAccounts: accounts,
 	}, nil
 }
 

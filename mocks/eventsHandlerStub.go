@@ -1,19 +1,18 @@
 package mocks
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // EventsHandlerStub implements EventsHandler interface
 type EventsHandlerStub struct {
 	SkipRecivedDuplicatedEventsCalled func(id, value string)
-	HandlePushEventsCalled           func(events data.BlockEvents) error
-	HandleRevertEventsCalled         func(revertBlock data.RevertBlock)
-	HandleFinalizedEventsCalled      func(finalizedBlock data.FinalizedBlock)
-	HandleBlockTxsCalled             func(blockTxs data.BlockTxs)
-	HandleBlockScrsCalled            func(blockScrs data.BlockScrs)
-	HandleBlockEventsWithOrderCalled func(blockTxs data.BlockEventsWithOrder)
+	HandlePushEventsCalled            func(events data.BlockEvents) error
+	HandleRevertEventsCalled          func(revertBlock data.RevertBlock)
+	HandleFinalizedEventsCalled       func(finalizedBlock data.FinalizedBlock)
+	HandleBlockTxsCalled              func(blockTxs data.BlockTxs)
+	HandleBlockScrsCalled             func(blockScrs data.BlockScrs)
+	HandleBlockEventsWithOrderCalled  func(blockTxs data.BlockEventsWithOrder)
 }
 
 // SkipRecivedDuplicatedEvents -
@@ -22,8 +21,8 @@ func (e *EventsHandlerStub) SkipRecivedDuplicatedEvents(id, value string) bool {
 }
 
 // HandleAlteredAccounts -
-func (e *EventsHandlerStub) HandleAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
-} 
+func (e *EventsHandlerStub) HandleAlteredAccounts(accounts data.AlteredAccountsEvent) {
+}
 
 // HandlePushEvents -
 func (e *EventsHandlerStub) HandlePushEvents(events data.BlockEvents) error {

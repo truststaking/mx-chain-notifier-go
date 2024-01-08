@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
 	"github.com/streadway/amqp"
@@ -36,7 +35,7 @@ type rabbitMqPublisher struct {
 	broadcastFinalized            chan data.FinalizedBlock
 	broadcastTxs                  chan data.BlockTxs
 	broadcastBlockEventsWithOrder chan data.BlockEventsWithOrder
-	alteredAccounts				  chan *alteredAccount.AlteredAccount
+	alteredAccounts               chan data.AlteredAccountsEvent
 	broadcastScrs                 chan data.BlockScrs
 
 	cancelFunc func()
@@ -57,6 +56,7 @@ func NewRabbitMqPublisher(args ArgsRabbitMqPublisher) (*rabbitMqPublisher, error
 		broadcastTxs:                  make(chan data.BlockTxs),
 		broadcastScrs:                 make(chan data.BlockScrs),
 		broadcastBlockEventsWithOrder: make(chan data.BlockEventsWithOrder),
+		alteredAccounts:               make(chan data.AlteredAccountsEvent),
 		cfg:                           args.Config,
 		client:                        args.Client,
 		marshaller:                    args.Marshaller,
@@ -242,7 +242,7 @@ func (rp *rabbitMqPublisher) BroadcastScrs(events data.BlockScrs) {
 	}
 }
 
-func (rp *rabbitMqPublisher) BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+func (rp *rabbitMqPublisher) BroadcastAlteredAccounts(accounts data.AlteredAccountsEvent) {
 	select {
 	case rp.alteredAccounts <- accounts:
 	case <-rp.closeChan:
@@ -335,15 +335,14 @@ func (rp *rabbitMqPublisher) publishBlockEventsWithOrderToExchange(blockTxs data
 	}
 }
 
-
-func (rp *rabbitMqPublisher) publishAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+func (rp *rabbitMqPublisher) publishAlteredAccounts(accounts data.AlteredAccountsEvent) {
 	alteredAccountBytes, err := rp.marshaller.Marshal(accounts)
 	if err != nil {
 		log.Error("could not marshal altered accounts event", "err", err.Error())
 		return
 	}
 
-	err = rp.publishFanout(rp.cfg.BlockEventsExchange.Name, alteredAccountBytes)
+	err = rp.publishFanout(rp.cfg.AlteredAccountsExchange.Name, alteredAccountBytes)
 	if err != nil {
 		log.Error("failed to publish altered accounts to rabbitMQ", "err", err.Error())
 	}

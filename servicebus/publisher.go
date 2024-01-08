@@ -2,9 +2,11 @@ package servicebus
 
 import (
 	"context"
+	"encoding/hex"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
+	"github.com/multiversx/mx-chain-core-go/core"
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
 	"github.com/truststaking/mx-chain-notifier-go/common"
@@ -32,7 +34,7 @@ type serviceBusPublisher struct {
 	broadcastTxs                  chan data.BlockTxs
 	broadcastBlockEventsWithOrder chan data.BlockEventsWithOrder
 	broadcastScrs                 chan data.BlockScrs
-	alteredAccount                chan *alteredAccount.AlteredAccount
+	alteredAccount                chan data.AlteredAccountsEvent
 
 	cancelFunc func()
 	closeChan  chan struct{}
@@ -52,7 +54,7 @@ func NewServiceBusPublisher(args ArgsServiceBusPublisher) (*serviceBusPublisher,
 		broadcastTxs:                  make(chan data.BlockTxs),
 		broadcastScrs:                 make(chan data.BlockScrs),
 		broadcastBlockEventsWithOrder: make(chan data.BlockEventsWithOrder),
-		alteredAccount:                make(chan *alteredAccount.AlteredAccount),
+		alteredAccount:                make(chan data.AlteredAccountsEvent),
 		cfg:                           args.Config,
 		client:                        args.Client,
 		marshaller:                    args.Marshaller,
@@ -116,7 +118,7 @@ func (sb *serviceBusPublisher) run(ctx context.Context) {
 			sb.publishTxsToExchange(blockTxs)
 		case blockScrs := <-sb.broadcastScrs:
 			sb.publishScrsToExchange(blockScrs)
-		case alteredAccount := <- sb.alteredAccount:
+		case alteredAccount := <-sb.alteredAccount:
 			sb.publishAlteredAccounts(alteredAccount)
 		case blockEvents := <-sb.broadcastBlockEventsWithOrder:
 			sb.publishBlockEventsWithOrderToExchange(blockEvents)
@@ -133,7 +135,7 @@ func (sb *serviceBusPublisher) Broadcast(events data.BlockEvents) {
 }
 
 // Broadcast will handle the altered accounts pushed by producers and sends them to servicebus channel
-func (sb *serviceBusPublisher) BroadcastAlteredAccounts(events *alteredAccount.AlteredAccount) {
+func (sb *serviceBusPublisher) BroadcastAlteredAccounts(events data.AlteredAccountsEvent) {
 	select {
 	case sb.alteredAccount <- events:
 	case <-sb.closeChan:
@@ -181,13 +183,59 @@ func (sb *serviceBusPublisher) BroadcastBlockEventsWithOrder(events data.BlockEv
 }
 
 func (sb *serviceBusPublisher) publishToExchanges(events data.BlockEvents) {
-	eventsBytes, err := sb.marshaller.Marshal(events)
-	if err != nil {
-		log.Error("could not marshal events", "err", err.Error())
-		return
-	}
+	messages := make([]*azservicebus.Message, 0)
 
-	err = sb.publishFanout(sb.cfg.EventsExchange, eventsBytes)
+	for _, event := range events.Events {
+		identifier := event.Identifier
+		sessionId := event.Address
+		isNFT := "true"
+
+		if sb.cfg.SkipExecutionEventLogs {
+			if identifier == core.WriteLogIdentifier ||
+				identifier == core.SignalErrorOperation ||
+				identifier == core.InternalVMErrorsOperation ||
+				identifier == core.CompletedTxEventIdentifier {
+				continue
+			}
+		}
+
+		if identifier == core.BuiltInFunctionESDTNFTCreate ||
+			identifier == core.BuiltInFunctionESDTNFTBurn ||
+			identifier == core.BuiltInFunctionESDTNFTUpdateAttributes ||
+			identifier == core.BuiltInFunctionESDTNFTAddURI ||
+			identifier == core.BuiltInFunctionESDTNFTAddQuantity ||
+			identifier == core.BuiltInFunctionMultiESDTNFTTransfer ||
+			identifier == core.BuiltInFunctionESDTNFTTransfer ||
+			identifier == core.BuiltInFunctionESDTTransfer {
+			hexStr := hex.EncodeToString(event.Topics[1])
+			if hexStr == "" {
+				isNFT = "false"
+			}
+			sessionId = string(event.Topics[0])
+		}
+
+		payload, err := sb.marshaller.Marshal(event)
+		if err != nil {
+			log.Error("Error marshalling JSON data for service bus:", err)
+			return
+		}
+		msg := &azservicebus.Message{
+			Body:                  payload,
+			SessionID:             &sessionId,
+			ApplicationProperties: make(map[string]interface{})}
+
+		msg.ApplicationProperties["Address"] = event.Address
+		msg.ApplicationProperties["Identifier"] = event.Identifier
+
+		msg.ApplicationProperties["Hash"] = event.TxHash
+		msg.ApplicationProperties["OriginalTxHash"] = event.OriginalTxHash
+
+		if identifier == core.BuiltInFunctionMultiESDTNFTTransfer {
+			msg.ApplicationProperties["isNFT"] = isNFT
+		}
+		messages = append(messages, msg)
+	}
+	err := sb.publishFanout(sb.cfg.EventsExchange, messages)
 	if err != nil {
 		log.Error("failed to publish events to servicebus", "err", err.Error())
 	}
@@ -199,8 +247,17 @@ func (sb *serviceBusPublisher) publishRevertToExchange(revertBlock data.RevertBl
 		log.Error("could not marshal revert event", "err", err.Error())
 		return
 	}
+	messages := make([]*azservicebus.Message, 0)
 
-	err = sb.publishFanout(sb.cfg.RevertEventsExchange, revertBlockBytes)
+	msg := &azservicebus.Message{
+		Body:                  revertBlockBytes,
+		SessionID:             &revertBlock.Hash,
+		ApplicationProperties: make(map[string]interface{})}
+
+	msg.ApplicationProperties["Hash"] = revertBlock.Hash
+	messages = append(messages, msg)
+
+	err = sb.publishFanout(sb.cfg.RevertEventsExchange, messages)
 	if err != nil {
 		log.Error("failed to publish revert event to servicebus", "err", err.Error())
 	}
@@ -212,47 +269,89 @@ func (sb *serviceBusPublisher) publishFinalizedToExchange(finalizedBlock data.Fi
 		log.Error("could not marshal finalized event", "err", err.Error())
 		return
 	}
+	messages := make([]*azservicebus.Message, 0)
 
-	err = sb.publishFanout(sb.cfg.FinalizedEventsExchange, finalizedBlockBytes)
+	msg := &azservicebus.Message{
+		Body:                  finalizedBlockBytes,
+		SessionID:             &finalizedBlock.Hash,
+		ApplicationProperties: make(map[string]interface{})}
+
+	msg.ApplicationProperties["Hash"] = finalizedBlock.Hash
+	messages = append(messages, msg)
+
+	err = sb.publishFanout(sb.cfg.FinalizedEventsExchange, messages)
 	if err != nil {
 		log.Error("failed to publish finalized event to servicebus", "err", err.Error())
 	}
 }
 
 func (sb *serviceBusPublisher) publishTxsToExchange(blockTxs data.BlockTxs) {
-	txsBlockBytes, err := sb.marshaller.Marshal(blockTxs)
-	if err != nil {
-		log.Error("could not marshal block txs event", "err", err.Error())
-		return
+	messages := make([]*azservicebus.Message, 0)
+
+	for _, tx := range blockTxs.Txs {
+		event, err := sb.marshaller.Marshal(tx)
+		if err != nil {
+			log.Error("could not marshal block scrs event", "err", err.Error())
+			return
+		}
+		msg := &azservicebus.Message{
+			Body:                  event,
+			SessionID:             &blockTxs.Hash,
+			ApplicationProperties: make(map[string]interface{})}
+
+		msg.ApplicationProperties["Hash"] = blockTxs.Hash
+		messages = append(messages, msg)
 	}
 
-	err = sb.publishFanout(sb.cfg.BlockTxsExchange, txsBlockBytes)
+	err := sb.publishFanout(sb.cfg.BlockTxsExchange, messages)
 	if err != nil {
 		log.Error("failed to publish block txs event to servicebus", "err", err.Error())
 	}
 }
 
-func (sb *serviceBusPublisher) publishAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
-	accountsBytes, err := sb.marshaller.Marshal(accounts)
-	if err != nil {
-		log.Error("could not marshal block scrs event", "err", err.Error())
-		return
-	}
+func (sb *serviceBusPublisher) publishAlteredAccounts(accounts data.AlteredAccountsEvent) {
+	messages := make([]*azservicebus.Message, 0)
 
-	err = sb.publishFanout(sb.cfg.BlockScrsExchange, accountsBytes)
+	for _, account := range accounts.Accounts {
+		event, err := sb.marshaller.Marshal(account)
+		if err != nil {
+			log.Error("could not marshal altered accounts event", "err", err.Error())
+			return
+		}
+		msg := &azservicebus.Message{
+			Body:                  event,
+			SessionID:             &account.Address,
+			ApplicationProperties: make(map[string]interface{})}
+
+		msg.ApplicationProperties["Address"] = account.Address
+		msg.ApplicationProperties["Hash"] = accounts.Hash
+		messages = append(messages, msg)
+	}
+	err := sb.publishFanout(sb.cfg.AlteredAccountsExchange, messages)
 	if err != nil {
-		log.Error("failed to publish block scrs event to servicebus", "err", err.Error())
+		log.Error("failed to publish altered accounts event to servicebus", "err", err.Error())
 	}
 }
 
 func (sb *serviceBusPublisher) publishScrsToExchange(blockScrs data.BlockScrs) {
-	scrsBlockBytes, err := sb.marshaller.Marshal(blockScrs)
-	if err != nil {
-		log.Error("could not marshal block scrs event", "err", err.Error())
-		return
+	messages := make([]*azservicebus.Message, 0)
+
+	for _, scr := range blockScrs.Scrs {
+		event, err := sb.marshaller.Marshal(scr)
+		if err != nil {
+			log.Error("could not marshal block scrs event", "err", err.Error())
+			return
+		}
+		msg := &azservicebus.Message{
+			Body:                  event,
+			SessionID:             &blockScrs.Hash,
+			ApplicationProperties: make(map[string]interface{})}
+
+		msg.ApplicationProperties["BlockHash"] = blockScrs.Hash
+		messages = append(messages, msg)
 	}
 
-	err = sb.publishFanout(sb.cfg.BlockScrsExchange, scrsBlockBytes)
+	err := sb.publishFanout(sb.cfg.BlockScrsExchange, messages)
 	if err != nil {
 		log.Error("failed to publish block scrs event to servicebus", "err", err.Error())
 	}
@@ -265,13 +364,23 @@ func (sb *serviceBusPublisher) publishBlockEventsWithOrderToExchange(blockTxs da
 		return
 	}
 
-	err = sb.publishFanout(sb.cfg.BlockEventsExchange, txsBlockBytes)
+	messages := make([]*azservicebus.Message, 0)
+
+	msg := &azservicebus.Message{
+		Body:                  txsBlockBytes,
+		SessionID:             &blockTxs.Hash,
+		ApplicationProperties: make(map[string]interface{})}
+
+	msg.ApplicationProperties["Hash"] = blockTxs.Hash
+	messages = append(messages, msg)
+
+	err = sb.publishFanout(sb.cfg.BlockEventsExchange, messages)
 	if err != nil {
 		log.Error("failed to publish full block events to servicebus", "err", err.Error())
 	}
 }
 
-func (sb *serviceBusPublisher) publishFanout(exchangeConfig config.ServiceBusExchangeConfig, payload []byte) error {
+func (sb *serviceBusPublisher) publishFanout(exchangeConfig config.ServiceBusExchangeConfig, payload []*azservicebus.Message) error {
 	return sb.client.Publish(exchangeConfig, sb.cfg, payload)
 }
 

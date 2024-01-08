@@ -1,7 +1,6 @@
 package disabled
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
@@ -12,7 +11,7 @@ type Publisher struct{}
 func (dp *Publisher) Run() {
 }
 
-func (dp *Publisher) BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+func (dp *Publisher) BroadcastAlteredAccounts(accounts data.AlteredAccountsEvent) {
 
 }
 

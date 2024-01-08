@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/multiversx/mx-chain-core-go/core/check"
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	logger "github.com/multiversx/mx-chain-logger-go"
 	"github.com/truststaking/mx-chain-notifier-go/common"
 	"github.com/truststaking/mx-chain-notifier-go/data"
@@ -35,7 +34,7 @@ type commonHub struct {
 	broadcastTxs                  chan data.BlockTxs
 	broadcastBlockEventsWithOrder chan data.BlockEventsWithOrder
 	broadcastScrs                 chan data.BlockScrs
-	alteredAccount                chan *alteredAccount.AlteredAccount
+	alteredAccount                chan data.AlteredAccountsEvent
 	closeChan                     chan struct{}
 	cancelFunc                    func()
 }
@@ -60,7 +59,7 @@ func NewCommonHub(args ArgsCommonHub) (*commonHub, error) {
 		broadcastTxs:                  make(chan data.BlockTxs),
 		broadcastBlockEventsWithOrder: make(chan data.BlockEventsWithOrder),
 		broadcastScrs:                 make(chan data.BlockScrs),
-		alteredAccount:				   make(chan *alteredAccount.AlteredAccount),
+		alteredAccount:                make(chan data.AlteredAccountsEvent),
 		closeChan:                     make(chan struct{}),
 	}, nil
 }
@@ -132,10 +131,9 @@ func (ch *commonHub) Broadcast(events data.BlockEvents) {
 	}
 }
 
-
 // Broadcast handles block events pushed by producers into the broadcast channel
 // Upon reading the channel, the hub notifies the registered dispatchers, if any
-func (ch *commonHub) BroadcastAlteredAccounts(events *alteredAccount.AlteredAccount) {
+func (ch *commonHub) BroadcastAlteredAccounts(events data.AlteredAccountsEvent) {
 	select {
 	case ch.alteredAccount <- events:
 	case <-ch.closeChan:

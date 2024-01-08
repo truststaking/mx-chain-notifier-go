@@ -1,7 +1,6 @@
 package disabled
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
@@ -14,7 +13,7 @@ type Hub struct {
 func (h *Hub) Run() {
 }
 
-func (h *Hub) BroadcastAlteredAccounts(_ *alteredAccount.AlteredAccount) {
+func (h *Hub) BroadcastAlteredAccounts(_ data.AlteredAccountsEvent) {
 }
 
 // Broadcast does nothing

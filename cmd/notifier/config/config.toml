@@ -129,8 +129,8 @@
 
     # The exchange which holds all logs and events
     [AzureServiceBus.EventsExchange]
-        Topic = "all_events"
-        Enabled = false
+        Topic = "mvx_events_raw"
+        Enabled = true
 
     # The exchange which holds revert events
     [AzureServiceBus.RevertEventsExchange]
@@ -154,8 +154,8 @@
 
     # The exchange which holds block events with additional info
     [AzureServiceBus.BlockEventsExchange]
-        Topic = "mvx_events_raw"
-        Enabled = true
+        Topic = "block_events"
+        Enabled = false
     
     # The exchange which holds block events with additional info
     [AzureServiceBus.AlteredAccountsExchange]

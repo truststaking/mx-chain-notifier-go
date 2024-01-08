@@ -29,17 +29,17 @@ type Event struct {
 
 // Event holds event data
 type EventDuplicateCheck struct {
-	Address        []byte   `json:"address"`
-	Identifier     []byte   `json:"identifier"`
-	Topics         [][]byte `json:"topics"`
+	Address    []byte   `json:"address"`
+	Identifier []byte   `json:"identifier"`
+	Topics     [][]byte `json:"topics"`
 }
 
 // AlteredAccounts holds events data for altered accounts in a block
 type AlteredAccountsEvent struct {
-	Hash      string  `json:"hash"`
-	ShardID   uint32  `json:"shardId"`
-	TimeStamp uint64  `json:"timestamp"`
-	Accounts    []*alteredAccount.AlteredAccount `json:"accounts"`
+	Hash      string                           `json:"hash"`
+	ShardID   uint32                           `json:"shardId"`
+	TimeStamp uint64                           `json:"timestamp"`
+	Accounts  []*alteredAccount.AlteredAccount `json:"accounts"`
 }
 
 // BlockEvents holds events data for a block

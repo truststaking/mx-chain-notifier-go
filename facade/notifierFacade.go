@@ -107,13 +107,14 @@ func (nf *notifierFacade) HandlePushEvents(allEvents data.ArgsSaveBlockData) err
 	}
 	nf.eventsHandler.HandleBlockEventsWithOrder(txsWithOrder)
 
-	// alteredAccounts := data.AlteredAccountsEvent{
-	// 	Hash:      eventsData.Hash,
-	// 	ShardID:   eventsData.Header.GetShardID(),
-	// 	TimeStamp: eventsData.Header.GetTimeStamp(),
-	// 	Accounts: allEvents.AlteredAccounts,
-	// }
-	// nf.eventsHandler.HandleAlteredAccounts(allEvents.AlteredAccounts)
+	alteredAccounts := data.AlteredAccountsEvent{
+		Hash:      eventsData.Hash,
+		ShardID:   eventsData.Header.GetShardID(),
+		TimeStamp: eventsData.Header.GetTimeStamp(),
+		Accounts:  eventsData.AlteredAccounts,
+	}
+
+	nf.eventsHandler.HandleAlteredAccounts(alteredAccounts)
 	return nil
 }
 

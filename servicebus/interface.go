@@ -1,14 +1,14 @@
 package servicebus
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
+	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
 	"github.com/truststaking/mx-chain-notifier-go/config"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
 // ServiceBusClient defines the behaviour of a rabbitMq client
 type ServiceBusClient interface {
-	Publish(exchange config.ServiceBusExchangeConfig, cfg config.AzureServiceBusConfig, payload []byte) error
+	Publish(exchange config.ServiceBusExchangeConfig, cfg config.AzureServiceBusConfig, payload []*azservicebus.Message) error
 	Close()
 	IsInterfaceNil() bool
 }
@@ -17,7 +17,7 @@ type ServiceBusClient interface {
 // able to publish received events and broadcast them to channels
 type PublisherService interface {
 	Run()
-	BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount)
+	BroadcastAlteredAccounts(accounts data.AlteredAccountsEvent)
 	Broadcast(events data.BlockEvents)
 	BroadcastRevert(event data.RevertBlock)
 	BroadcastFinalized(event data.FinalizedBlock)

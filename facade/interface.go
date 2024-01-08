@@ -1,7 +1,6 @@
 package facade
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
@@ -16,7 +15,7 @@ type EventsHandler interface {
 	HandleBlockTxs(blockTxs data.BlockTxs)
 	HandleBlockScrs(blockScrs data.BlockScrs)
 	HandleBlockEventsWithOrder(blockTxs data.BlockEventsWithOrder)
-	HandleAlteredAccounts(accounts *alteredAccount.AlteredAccount)
+	HandleAlteredAccounts(accounts data.AlteredAccountsEvent)
 	IsInterfaceNil() bool
 }
 

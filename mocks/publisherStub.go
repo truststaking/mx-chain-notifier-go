@@ -1,7 +1,6 @@
 package mocks
 
 import (
-	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
@@ -24,9 +23,8 @@ func (ps *PublisherStub) Run() {
 }
 
 // Broadcast -
-func (ps *PublisherStub) BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+func (ps *PublisherStub) BroadcastAlteredAccounts(accounts data.AlteredAccountsEvent) {
 }
-
 
 // Broadcast -
 func (ps *PublisherStub) Broadcast(events data.BlockEvents) {
