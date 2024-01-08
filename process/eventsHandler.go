@@ -122,6 +122,11 @@ func (eh *eventsHandler) HandleRevertEvents(revertBlock data.RevertBlock) {
 		return
 	}
 
+	skip := eh.SkipRecivedDuplicatedEvents(common.RevertBlockEvents, revertBlock.Hash)
+	if skip {
+		return
+	}
+
 	t := time.Now()
 	eh.publisher.BroadcastRevert(revertBlock)
 	eh.metricsHandler.AddRequest(getRabbitOpID(common.RevertBlockEvents), time.Since(t))
@@ -155,11 +160,6 @@ func (eh *eventsHandler) HandleBlockTxs(blockTxs data.BlockTxs) {
 		return
 	}
 
-	skip := eh.SkipRecivedDuplicatedEvents(common.BlockTxs, blockTxs.Hash)
-	if skip {
-		return
-	}
-
 	t := time.Now()
 	eh.publisher.BroadcastTxs(blockTxs)
 	eh.metricsHandler.AddRequest(getRabbitOpID(common.BlockTxs), time.Since(t))
@@ -171,10 +171,6 @@ func (eh *eventsHandler) HandleBlockScrs(blockScrs data.BlockScrs) {
 		log.Warn("received empty hash", "event", common.BlockScrs,
 			"will process", false,
 		)
-		return
-	}
-	skip := eh.SkipRecivedDuplicatedEvents(common.BlockScrs, blockScrs.Hash)
-	if skip {
 		return
 	}
 
@@ -189,11 +185,6 @@ func (eh *eventsHandler) HandleBlockEventsWithOrder(blockTxs data.BlockEventsWit
 		log.Warn("received empty hash", "event", common.BlockEvents,
 			"will process", false,
 		)
-		return
-	}
-
-	skip := eh.SkipRecivedDuplicatedEvents(common.BlockEvents, blockTxs.Hash)
-	if skip {
 		return
 	}
 

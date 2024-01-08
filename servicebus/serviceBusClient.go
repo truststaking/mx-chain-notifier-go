@@ -101,8 +101,6 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		if err != nil {
 			log.Error("Error send remaining messages in batch", err.Error())
 			return err
-		} else {
-			log.Info("Sent remaining messages in batch", "count", currentMessageBatch.NumMessages())
 		}
 	}
 
