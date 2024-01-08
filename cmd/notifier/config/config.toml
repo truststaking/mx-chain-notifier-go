@@ -115,6 +115,10 @@
         Name = "block_events"
         Type = "fanout"
 
+    [RabbitMQ.AlteredAccountsExchange]
+        Name = "mvx_altered_accounts"
+        Type = "fanout"
+
 
 [AzureServiceBus]
     # ServiceBusConnectionString is the connection string for the ServiceBus instance
@@ -151,6 +155,11 @@
     # The exchange which holds block events with additional info
     [AzureServiceBus.BlockEventsExchange]
         Topic = "mvx_events_raw"
+        Enabled = true
+    
+    # The exchange which holds block events with additional info
+    [AzureServiceBus.AlteredAccountsExchange]
+        Topic = "mvx_altered_accounts"
         Enabled = true
 
 [AzureKeyVault]

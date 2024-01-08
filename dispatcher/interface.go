@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
@@ -24,6 +25,7 @@ type EventDispatcher interface {
 // and unregister dispatching events
 type Hub interface {
 	Run()
+	BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount)
 	Broadcast(events data.BlockEvents)
 	BroadcastRevert(event data.RevertBlock)
 	BroadcastFinalized(event data.FinalizedBlock)

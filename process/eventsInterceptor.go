@@ -74,7 +74,7 @@ func (ei *eventsInterceptor) ProcessBlockEvents(eventsData *data.ArgsSaveBlockDa
 		txs[hash] = tx.Transaction
 	}
 	txsWithOrder := eventsData.TransactionsPool.Transactions
-
+	log.Info("altered accounts", "accounts", eventsData.AlteredAccounts)
 	return &data.InterceptorBlockData{
 		Hash:          hex.EncodeToString(eventsData.HeaderHash),
 		Body:          eventsData.Body,

@@ -3,6 +3,7 @@ package data
 import (
 	"encoding/json"
 
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/multiversx/mx-chain-core-go/data/outport"
 	"github.com/multiversx/mx-chain-core-go/data/receipt"
 	"github.com/multiversx/mx-chain-core-go/data/rewardTx"
@@ -31,6 +32,14 @@ type EventDuplicateCheck struct {
 	Address        []byte   `json:"address"`
 	Identifier     []byte   `json:"identifier"`
 	Topics         [][]byte `json:"topics"`
+}
+
+// AlteredAccounts holds events data for altered accounts in a block
+type AlteredAccountsEvent struct {
+	Hash      string  `json:"hash"`
+	ShardID   uint32  `json:"shardId"`
+	TimeStamp uint64  `json:"timestamp"`
+	Accounts    []*alteredAccount.AlteredAccount `json:"accounts"`
 }
 
 // BlockEvents holds events data for a block

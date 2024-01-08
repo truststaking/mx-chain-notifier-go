@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	logger "github.com/multiversx/mx-chain-logger-go"
 	"github.com/truststaking/mx-chain-notifier-go/common"
 	"github.com/truststaking/mx-chain-notifier-go/data"
@@ -106,6 +107,12 @@ func (eh *eventsHandler) SkipRecivedDuplicatedEvents(id string, value string) bo
 	}
 	return false
 }
+
+func (eh *eventsHandler) HandleAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+	t := time.Now()
+	eh.publisher.BroadcastAlteredAccounts(accounts)
+	eh.metricsHandler.AddRequest(getRabbitOpID(common.RevertBlockEvents), time.Since(t))
+} 
 
 // HandleRevertEvents will handle revents events received from observer
 func (eh *eventsHandler) HandleRevertEvents(revertBlock data.RevertBlock) {

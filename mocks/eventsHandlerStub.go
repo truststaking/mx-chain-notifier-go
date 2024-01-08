@@ -1,6 +1,9 @@
 package mocks
 
-import "github.com/truststaking/mx-chain-notifier-go/data"
+import (
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+)
 
 // EventsHandlerStub implements EventsHandler interface
 type EventsHandlerStub struct {
@@ -17,6 +20,10 @@ type EventsHandlerStub struct {
 func (e *EventsHandlerStub) SkipRecivedDuplicatedEvents(id, value string) bool {
 	return true
 }
+
+// HandleAlteredAccounts -
+func (e *EventsHandlerStub) HandleAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+} 
 
 // HandlePushEvents -
 func (e *EventsHandlerStub) HandlePushEvents(events data.BlockEvents) error {

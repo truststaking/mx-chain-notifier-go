@@ -54,6 +54,12 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		return err
 	}
 
+	currentMessageBatch, err := sender.NewMessageBatch(context.Background(), nil)
+	if err != nil {
+		log.Error("error creating message batch for service bus:", err)
+		return err
+	}
+	
 	var events data.BlockEventsWithOrder
 
 	err = json.Unmarshal(payload, &events)
@@ -62,11 +68,6 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 		return err
 	}
 
-	currentMessageBatch, err := sender.NewMessageBatch(context.Background(), nil)
-	if err != nil {
-		log.Error("error creating message batch for service bus:", err)
-		return err
-	}
 
 	for i := 0; i < len(events.Events); i++ {
 		identifier := events.Events[i].Identifier
@@ -81,6 +82,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 				continue
 			}
 		}
+
 		if identifier == core.BuiltInFunctionESDTNFTCreate ||
 			identifier == core.BuiltInFunctionESDTNFTBurn ||
 			identifier == core.BuiltInFunctionESDTNFTUpdateAttributes ||
@@ -95,6 +97,7 @@ func (sb *serviceBusClient) Publish(exchangeConfig config.ServiceBusExchangeConf
 			}
 			sessionId = string(events.Events[i].Topics[0])
 		}
+
 		event, err := json.Marshal(events.Events[i])
 		if err != nil {
 			log.Error("Error marshalling JSON data for service bus:", err)

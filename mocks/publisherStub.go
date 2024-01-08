@@ -1,6 +1,9 @@
 package mocks
 
-import "github.com/truststaking/mx-chain-notifier-go/data"
+import (
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
+	"github.com/truststaking/mx-chain-notifier-go/data"
+)
 
 // PublisherStub implements PublisherService interface
 type PublisherStub struct {
@@ -19,6 +22,11 @@ func (ps *PublisherStub) Run() {
 		ps.RunCalled()
 	}
 }
+
+// Broadcast -
+func (ps *PublisherStub) BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+}
+
 
 // Broadcast -
 func (ps *PublisherStub) Broadcast(events data.BlockEvents) {

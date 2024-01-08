@@ -1,6 +1,7 @@
 package mocks
 
 import (
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 	"github.com/truststaking/mx-chain-notifier-go/dispatcher"
 )
@@ -25,6 +26,13 @@ func (h *HubStub) Run() {
 	if h.RunCalled != nil {
 		h.RunCalled()
 	}
+}
+
+// BroadcastAlteredAccounts -
+func (h *HubStub) BroadcastAlteredAccounts(events *alteredAccount.AlteredAccount) {
+	// if h.BroadcastCalled != nil {
+	// 	h.BroadcastCalled(events)
+	// }
 }
 
 // Broadcast -

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/multiversx/mx-chain-core-go/core/check"
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/multiversx/mx-chain-core-go/marshal"
 	logger "github.com/multiversx/mx-chain-logger-go"
 	"github.com/truststaking/mx-chain-notifier-go/common"
@@ -31,6 +32,7 @@ type serviceBusPublisher struct {
 	broadcastTxs                  chan data.BlockTxs
 	broadcastBlockEventsWithOrder chan data.BlockEventsWithOrder
 	broadcastScrs                 chan data.BlockScrs
+	alteredAccount                chan *alteredAccount.AlteredAccount
 
 	cancelFunc func()
 	closeChan  chan struct{}
@@ -50,6 +52,7 @@ func NewServiceBusPublisher(args ArgsServiceBusPublisher) (*serviceBusPublisher,
 		broadcastTxs:                  make(chan data.BlockTxs),
 		broadcastScrs:                 make(chan data.BlockScrs),
 		broadcastBlockEventsWithOrder: make(chan data.BlockEventsWithOrder),
+		alteredAccount:                make(chan *alteredAccount.AlteredAccount),
 		cfg:                           args.Config,
 		client:                        args.Client,
 		marshaller:                    args.Marshaller,
@@ -113,6 +116,8 @@ func (sb *serviceBusPublisher) run(ctx context.Context) {
 			sb.publishTxsToExchange(blockTxs)
 		case blockScrs := <-sb.broadcastScrs:
 			sb.publishScrsToExchange(blockScrs)
+		case alteredAccount := <- sb.alteredAccount:
+			sb.publishAlteredAccounts(alteredAccount)
 		case blockEvents := <-sb.broadcastBlockEventsWithOrder:
 			sb.publishBlockEventsWithOrderToExchange(blockEvents)
 		}
@@ -123,6 +128,14 @@ func (sb *serviceBusPublisher) run(ctx context.Context) {
 func (sb *serviceBusPublisher) Broadcast(events data.BlockEvents) {
 	select {
 	case sb.broadcast <- events:
+	case <-sb.closeChan:
+	}
+}
+
+// Broadcast will handle the altered accounts pushed by producers and sends them to servicebus channel
+func (sb *serviceBusPublisher) BroadcastAlteredAccounts(events *alteredAccount.AlteredAccount) {
+	select {
+	case sb.alteredAccount <- events:
 	case <-sb.closeChan:
 	}
 }
@@ -216,6 +229,19 @@ func (sb *serviceBusPublisher) publishTxsToExchange(blockTxs data.BlockTxs) {
 	err = sb.publishFanout(sb.cfg.BlockTxsExchange, txsBlockBytes)
 	if err != nil {
 		log.Error("failed to publish block txs event to servicebus", "err", err.Error())
+	}
+}
+
+func (sb *serviceBusPublisher) publishAlteredAccounts(accounts *alteredAccount.AlteredAccount) {
+	accountsBytes, err := sb.marshaller.Marshal(accounts)
+	if err != nil {
+		log.Error("could not marshal block scrs event", "err", err.Error())
+		return
+	}
+
+	err = sb.publishFanout(sb.cfg.BlockScrsExchange, accountsBytes)
+	if err != nil {
+		log.Error("failed to publish block scrs event to servicebus", "err", err.Error())
 	}
 }
 

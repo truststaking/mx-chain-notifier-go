@@ -82,32 +82,37 @@
 
     # The exchange which holds all logs and events
     [RabbitMQ.EventsExchange]
-        Name = "all_events"
+        Name = "all_events_dev"
         Type = "fanout"
 
     # The exchange which holds revert events
     [RabbitMQ.RevertEventsExchange]
-        Name = "revert_events"
+        Name = "revert_events_dev"
         Type = "fanout"
 
     # The exchange which holds finalized block events
     [RabbitMQ.FinalizedEventsExchange]
-        Name = "finalized_events"
+        Name = "finalized_events_dev"
         Type = "fanout"
 
     # The exchange which holds block txs events
     [RabbitMQ.BlockTxsExchange]
-        Name = "block_txs"
+        Name = "block_txs_dev"
         Type = "fanout"
 
     # The exchange which holds block scrs events
     [RabbitMQ.BlockScrsExchange]
-        Name = "block_scrs"
+        Name = "block_scrs_dev"
         Type = "fanout"
 
     # The exchange which holds block events with additional info
     [RabbitMQ.BlockEventsExchange]
-        Name = "block_events"
+        Name = "block_events_dev"
+        Type = "fanout"
+
+    
+    [RabbitMQ.AlteredAccountsExchange]
+        Name = "mvx_altered_accounts_devnet"
         Type = "fanout"
 
 
@@ -145,6 +150,11 @@
     # The exchange which holds block events with additional info
     [AzureServiceBus.BlockEventsExchange]
         Topic = "mvx_events_raw_devnet"
+        Enabled = true
+
+    # The exchange which holds block events with additional info
+    [AzureServiceBus.AlteredAccountsExchange]
+        Topic = "mvx_altered_accounts_devnet"
         Enabled = true
 
 [AzureKeyVault]

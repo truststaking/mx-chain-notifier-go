@@ -96,7 +96,7 @@ func (nf *notifierFacade) HandlePushEvents(allEvents data.ArgsSaveBlockData) err
 		Scrs: eventsData.Scrs,
 	}
 	nf.eventsHandler.HandleBlockScrs(scrs)
-	
+
 	txsWithOrder := data.BlockEventsWithOrder{
 		Hash:      eventsData.Hash,
 		ShardID:   eventsData.Header.GetShardID(),
@@ -107,12 +107,20 @@ func (nf *notifierFacade) HandlePushEvents(allEvents data.ArgsSaveBlockData) err
 	}
 	nf.eventsHandler.HandleBlockEventsWithOrder(txsWithOrder)
 
+	// alteredAccounts := data.AlteredAccountsEvent{
+	// 	Hash:      eventsData.Hash,
+	// 	ShardID:   eventsData.Header.GetShardID(),
+	// 	TimeStamp: eventsData.Header.GetTimeStamp(),
+	// 	Accounts: allEvents.AlteredAccounts,
+	// }
+	// nf.eventsHandler.HandleAlteredAccounts(allEvents.AlteredAccounts)
 	return nil
 }
 
 func (nf *notifierFacade) SkipRecivedDuplicatedEvents(id, value string) bool {
 	return nf.eventsHandler.SkipRecivedDuplicatedEvents(id, value)
 }
+
 // HandleRevertEvents will handle revents events received from observer
 func (nf *notifierFacade) HandleRevertEvents(events data.RevertBlock) {
 	nf.eventsHandler.HandleRevertEvents(events)

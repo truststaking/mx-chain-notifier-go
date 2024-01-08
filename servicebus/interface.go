@@ -1,6 +1,7 @@
 package servicebus
 
 import (
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/config"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
@@ -16,6 +17,7 @@ type ServiceBusClient interface {
 // able to publish received events and broadcast them to channels
 type PublisherService interface {
 	Run()
+	BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount)
 	Broadcast(events data.BlockEvents)
 	BroadcastRevert(event data.RevertBlock)
 	BroadcastFinalized(event data.FinalizedBlock)

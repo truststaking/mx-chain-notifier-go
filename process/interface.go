@@ -3,6 +3,7 @@ package process
 import (
 	"context"
 
+	"github.com/multiversx/mx-chain-core-go/data/alteredAccount"
 	"github.com/truststaking/mx-chain-notifier-go/data"
 )
 
@@ -19,6 +20,7 @@ type LockService interface {
 // able to publish received events and broadcast them to channels
 type Publisher interface {
 	Broadcast(events data.BlockEvents)
+	BroadcastAlteredAccounts(accounts *alteredAccount.AlteredAccount)
 	BroadcastRevert(event data.RevertBlock)
 	BroadcastFinalized(event data.FinalizedBlock)
 	BroadcastTxs(event data.BlockTxs)
@@ -30,6 +32,7 @@ type Publisher interface {
 // EventsHandler defines the behaviour of an events handler component
 type EventsHandler interface {
 	SkipRecivedDuplicatedEvents(id, value string) bool
+	HandleAlteredAccounts(accounts *alteredAccount.AlteredAccount)
 	HandlePushEvents(events data.BlockEvents) error
 	HandleRevertEvents(revertBlock data.RevertBlock)
 	HandleFinalizedEvents(finalizedBlock data.FinalizedBlock)
