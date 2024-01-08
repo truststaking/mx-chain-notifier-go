@@ -106,7 +106,6 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
-				log.Debug("Data", "event - data", hex.EncodeToString(event.GetData()))
 				skipEvent, err := ei.locker.IsCrossShardConfirmation(context.Background(), originalTxHash, data.EventDuplicateCheck{
 					Address:    event.Address,
 					Identifier: event.Identifier,

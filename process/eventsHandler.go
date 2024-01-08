@@ -81,18 +81,8 @@ func (eh *eventsHandler) HandlePushEvents(events data.BlockEvents) error {
 	}
 
 	if len(events.Events) == 0 {
-		// log.Warn("received empty events", "event", common.PushLogsAndEvents,
-		// 	"block hash", events.Hash,
-		// 	"will process", shouldProcessEvents,
-		// )
 		events.Events = make([]data.Event, 0)
-	} 
-	// else {
-		// log.Info("received", "event", common.PushLogsAndEvents,
-		// "block hash", events.Hash,
-		// 	"will process", shouldProcessEvents,
-		// )
-	// }
+	}
 
 	t := time.Now()
 	eh.publisher.Broadcast(events)
@@ -108,10 +98,10 @@ func (eh *eventsHandler) SkipRecivedDuplicatedEvents(id string, value string) bo
 	}
 
 	if !shouldProcessRevert {
-		log.Info("received duplicated events", "event", id,
-			"block hash", value,
-			"will process", false,
-		)
+		// log.Info("received duplicated events", "event", id,
+		// 	"block hash", value,
+		// 	"will process", false,
+		// )
 		return true
 	}
 	return false
@@ -125,11 +115,6 @@ func (eh *eventsHandler) HandleRevertEvents(revertBlock data.RevertBlock) {
 		)
 		return
 	}
-
-	// log.Info("received", "event", common.RevertBlockEvents,
-	// 	"block hash", revertBlock.Hash,
-	// 	"will process", shouldProcessRevert,
-	// )
 
 	t := time.Now()
 	eh.publisher.BroadcastRevert(revertBlock)
@@ -149,10 +134,6 @@ func (eh *eventsHandler) HandleFinalizedEvents(finalizedBlock data.FinalizedBloc
 	if skip {
 		return
 	}
-	// log.Info("received", "event", common.FinalizedBlockEvents,
-	// 	"block hash", finalizedBlock.Hash,
-	// 	"will process", shouldProcessFinalized,
-	// )
 
 	t := time.Now()
 	eh.publisher.BroadcastFinalized(finalizedBlock)
@@ -172,17 +153,6 @@ func (eh *eventsHandler) HandleBlockTxs(blockTxs data.BlockTxs) {
 	if skip {
 		return
 	}
-	// if len(blockTxs.Txs) == 0 {
-		// log.Warn("received empty events", "event", common.BlockTxs,
-		// 	"block hash", blockTxs.Hash,
-		// 	"will process", shouldProcessTxs,
-		// )
-	// } else {
-		// log.Info("received", "event", common.BlockTxs,
-		// 	"block hash", blockTxs.Hash,
-		// 	"will process", shouldProcessTxs,
-		// )
-	// }
 
 	t := time.Now()
 	eh.publisher.BroadcastTxs(blockTxs)
@@ -201,17 +171,6 @@ func (eh *eventsHandler) HandleBlockScrs(blockScrs data.BlockScrs) {
 	if skip {
 		return
 	}
-	// if len(blockScrs.Scrs) == 0 {
-		// log.Warn("received empty events", "event", common.BlockScrs,
-		// 	"block hash", blockScrs.Hash,
-		// 	"will process", shouldProcessScrs,
-		// )
-	// } else {
-		// log.Info("received", "event", common.BlockScrs,
-		// 	"block hash", blockScrs.Hash,
-		// 	"will process", shouldProcessScrs,
-		// )
-	// }
 
 	t := time.Now()
 	eh.publisher.BroadcastScrs(blockScrs)
@@ -231,10 +190,6 @@ func (eh *eventsHandler) HandleBlockEventsWithOrder(blockTxs data.BlockEventsWit
 	if skip {
 		return
 	}
-	// log.Info("received", "event", common.BlockEvents,
-	// 	"block hash", blockTxs.Hash,
-	// 	"will process", shouldProcessTxs,
-	// )
 
 	t := time.Now()
 	eh.publisher.BroadcastBlockEventsWithOrder(blockTxs)
