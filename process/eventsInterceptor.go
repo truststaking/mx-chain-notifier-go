@@ -116,7 +116,7 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 				originalTxHash = hex.EncodeToString(scResult.GetOriginalTxHash())
 			}
 
-			if eventIdentifier == core.SignalErrorOperation|| eventIdentifier == core.InternalVMErrorsOperation {
+			if eventIdentifier == core.SignalErrorOperation || eventIdentifier == core.InternalVMErrorsOperation {
 				if !exists {
 					skipTransfers = true
 				}
