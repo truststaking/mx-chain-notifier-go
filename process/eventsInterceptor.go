@@ -105,6 +105,8 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 		if check.IfNilReflect(logData.Log) {
 			continue
 		}
+		var tmpLogEvents []*logEvent
+		skipTransfers := false
 		for _, event := range logData.Log.Events {
 			eventIdentifier := string(event.Identifier)
 			originalTxHash := logData.GetTxHash()
@@ -112,6 +114,17 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 
 			if exists {
 				originalTxHash = hex.EncodeToString(scResult.GetOriginalTxHash())
+			}
+
+			if eventIdentifier == core.SignalErrorOperation|| eventIdentifier == core.InternalVMErrorsOperation {
+				if !exists {
+					skipTransfers = true
+				}
+				log.Debug("eventsInterceptor: received signalError or internalVMErrors event from log event",
+					"txHash", logData.TxHash,
+					"isSCResult", exists,
+					"skipTransfers", skipTransfers,
+				)
 			}
 
 			if eventIdentifier == core.BuiltInFunctionMultiESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTNFTTransfer || eventIdentifier == core.BuiltInFunctionESDTTransfer {
@@ -136,7 +149,20 @@ func (ei *eventsInterceptor) getLogEventsFromTransactionsPool(logs []*outport.Lo
 				OriginalTxHash: originalTxHash,
 			}
 
-			logEvents = append(logEvents, le)
+			tmpLogEvents = append(tmpLogEvents, le)
+		}
+		if skipTransfers {
+			var filteredItems []*logEvent
+			for _, item := range tmpLogEvents {
+				identifier := string(item.EventHandler.GetIdentifier())
+				if identifier == core.BuiltInFunctionMultiESDTNFTTransfer || identifier == core.BuiltInFunctionESDTNFTTransfer || identifier == core.BuiltInFunctionESDTTransfer {
+					continue
+				}
+				filteredItems = append(filteredItems, item)
+			}
+			logEvents = append(logEvents, filteredItems...)
+		} else {
+			logEvents = append(logEvents, tmpLogEvents...)
 		}
 	}
 
